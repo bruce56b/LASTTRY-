@@ -1,0 +1,3084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Legacy Homes PM Dashboard</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+body{background:#1a1a1a;color:#fff;min-height:100vh}
+
+/* HEADER */
+.util-bar{background:#111;border-bottom:1px solid #2a2a2a;padding:6px 20px;display:flex;align-items:center;justify-content:space-between;min-height:36px}
+.site-title{font-size:12px;font-weight:500;color:#fff;white-space:nowrap;margin-right:12px}
+.util-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.udiv{width:1px;height:14px;background:#444;flex-shrink:0}
+.ubtn{display:flex;align-items:center;gap:4px;padding:5px 10px;font-size:11px;border-radius:6px;cursor:pointer;border:1px solid #444;background:transparent;color:#fff;white-space:nowrap;flex-shrink:0}
+.ubtn:hover{background:#2a2a2a}
+.ubtn.primary{background:#fff;color:#111;border-color:#fff;font-weight:500}
+.ubtn.primary:hover{background:#e8e8e8}
+.brand-search{display:flex;align-items:center;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:6px;overflow:hidden;width:220px;flex-shrink:0;margin-left:32px}
+.brand-search input{flex:1;background:transparent;border:none;outline:none;padding:5px 10px;font-size:12px;color:#fff;min-width:0}
+.brand-search input::placeholder{color:#555}
+.brand-search:focus-within{border-color:#555}
+.brand-search-btn{padding:5px 8px;background:transparent;border:none;color:#555;cursor:pointer;font-size:13px;flex-shrink:0}
+.brand-search-btn:hover{color:#fff}
+
+.brand-bar{background:#111;padding:10px 20px;display:flex;align-items:center;border-bottom:1px solid #2a2a2a}
+.brand-bar img{height:46px;width:auto;display:block}
+.brand-divider{width:1px;height:50px;background:#333;margin:0 20px}
+.brand-main{font-size:17px;font-weight:500;color:#fff}
+.brand-sub{font-size:12px;color:#888;margin-top:2px}
+
+.nav{background:#1a1a1a;display:flex;width:100%;border-bottom:1px solid #2a2a2a;overflow:visible}
+.ni{flex:1;min-width:0;padding:0 6px;font-size:10.5px;color:#aaa;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:3px;height:42px;white-space:nowrap;border-right:1px solid #2a2a2a;transition:background 0.12s;position:relative;overflow:visible}
+.ni:last-child{border-right:none}
+.ni:hover,.ni.on{background:#2a2a2a;color:#fff}
+.ni svg{width:13px;height:13px;flex-shrink:0}
+.chev{font-size:10px;opacity:0.5}
+
+.dd{display:none;position:absolute;top:42px;left:0;background:#1e1e1e;border:1px solid #333;border-radius:0 0 8px 8px;min-width:210px;z-index:100}
+.dd.open{display:block}
+.ddl{font-size:10px;padding:8px 14px 4px;color:#666;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid #2a2a2a}
+.ddi{padding:9px 14px;font-size:12px;color:#ccc;cursor:pointer;border-bottom:1px solid #2a2a2a;display:flex;align-items:center;gap:8px}
+.ddi:last-child{border-bottom:none}
+.ddi:hover{background:#2a2a2a;color:#fff}
+
+/* MODALS */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:1000;align-items:center;justify-content:center}
+.overlay.show{display:flex}
+.modal{background:#1e1e1e;border:1px solid #333;border-radius:12px;width:100%;max-width:480px;padding:32px;position:relative;max-height:90vh;overflow-y:auto}
+.modal h2{font-size:18px;font-weight:500;color:#fff;margin-bottom:6px}
+.modal .sub{font-size:13px;color:#888;margin-bottom:24px}
+.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;color:#666;font-size:20px;cursor:pointer;line-height:1}
+.modal-close:hover{color:#fff}
+
+.form-row{margin-bottom:16px}
+.form-row label{display:block;font-size:12px;color:#888;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.04em}
+.form-row input,.form-row select{width:100%;padding:10px 12px;background:#111;border:1px solid #333;border-radius:6px;color:#fff;font-size:14px;outline:none}
+.form-row input:focus,.form-row select:focus{border-color:#555}
+.form-row input::placeholder{color:#555}
+.form-row select option{background:#111}
+.form-two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+.btn-full{width:100%;padding:11px;background:#fff;color:#111;border:none;border-radius:6px;font-size:14px;font-weight:500;cursor:pointer;margin-top:8px}
+.btn-full:hover{background:#e8e8e8}
+.btn-full.outline{background:transparent;color:#fff;border:1px solid #444;margin-top:0}
+.btn-full.outline:hover{background:#2a2a2a}
+.btn-full.danger{background:#c0392b;color:#fff}
+.btn-full.danger:hover{background:#a93226}
+
+.form-switch{text-align:center;margin-top:16px;font-size:13px;color:#888}
+.form-switch a{color:#aaa;text-decoration:underline;cursor:pointer}
+.form-switch a:hover{color:#fff}
+
+.divider-line{border:none;border-top:1px solid #2a2a2a;margin:20px 0}
+
+.error-msg{background:#2d1515;border:1px solid #c0392b;border-radius:6px;padding:10px 12px;font-size:13px;color:#e74c3c;margin-bottom:16px;display:none}
+.success-msg{background:#0f2d1a;border:1px solid #27ae60;border-radius:6px;padding:10px 12px;font-size:13px;color:#2ecc71;margin-bottom:16px;display:none}
+
+.pending-badge{display:inline-block;background:#2d2200;border:1px solid #f39c12;color:#f39c12;font-size:11px;padding:2px 8px;border-radius:99px;margin-left:8px}
+.approved-badge{display:inline-block;background:#0f2d1a;border:1px solid #27ae60;color:#2ecc71;font-size:11px;padding:2px 8px;border-radius:99px;margin-left:8px}
+.denied-badge{display:inline-block;background:#2d1515;border:1px solid #c0392b;color:#e74c3c;font-size:11px;padding:2px 8px;border-radius:99px;margin-left:8px}
+
+/* ADMIN PANEL */
+.admin-panel{padding:24px}
+.panel-title{font-size:16px;font-weight:500;color:#fff;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.user-table{width:100%;border-collapse:collapse;font-size:13px}
+.user-table th{text-align:left;padding:8px 12px;color:#666;font-weight:400;font-size:11px;text-transform:uppercase;letter-spacing:0.04em;border-bottom:1px solid #2a2a2a}
+.user-table td{padding:10px 12px;border-bottom:1px solid #1a1a1a;color:#ccc;vertical-align:middle}
+.user-table tr:hover td{background:#222}
+.access-select{background:#111;border:1px solid #333;border-radius:4px;color:#fff;padding:4px 8px;font-size:12px;cursor:pointer}
+.action-btn{padding:4px 10px;font-size:11px;border-radius:4px;cursor:pointer;border:none;margin-right:4px}
+.approve-btn{background:#0f2d1a;color:#2ecc71;border:1px solid #27ae60}
+.approve-btn:hover{background:#1a4a2a}
+.deny-btn{background:#2d1515;color:#e74c3c;border:1px solid #c0392b}
+.deny-btn:hover{background:#4a2020}
+.revoke-btn{background:#2d2200;color:#f39c12;border:1px solid #f39c12;font-size:11px;padding:4px 10px;border-radius:4px;cursor:pointer}
+.revoke-btn:hover{background:#4a3800}
+
+/* DASHBOARD BODY */
+.dash-body{min-height:200px;}
+.empty-state{text-align:center;color:#444;padding:60px 24px;}
+.empty-state .icon{font-size:40px;margin-bottom:12px}
+.empty-state p{font-size:14px;color:#555}
+
+/* ACCOUNT MODAL TABS */
+.tab-row{display:flex;gap:0;margin-bottom:24px;border-bottom:1px solid #2a2a2a}
+.tab{padding:8px 16px;font-size:13px;color:#666;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab.active{color:#fff;border-bottom-color:#fff}
+.tab:hover{color:#ccc}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+.section-label{font-size:11px;color:#666;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px;margin-top:20px}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #222}
+.info-row .label{font-size:13px;color:#888}
+.info-row .val{font-size:13px;color:#ccc}
+.role-pill{background:#1a2744;border:1px solid #2e4070;color:#8da4c8;font-size:11px;padding:3px 10px;border-radius:99px}
+
+.access-level-badge{font-size:11px;padding:3px 10px;border-radius:99px;font-weight:500}
+.al-full{background:#0f2d1a;color:#2ecc71;border:1px solid #27ae60}
+.al-standard{background:#1a2744;color:#8da4c8;border:1px solid #2e4070}
+.al-readonly{background:#2d2200;color:#f39c12;border:1px solid #f39c12}
+
+/* PM DASHBOARD */
+.pm-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px}
+.pm-stat-card{background:#111;border:1px solid #2a2a2a;border-radius:10px;padding:18px 16px}
+.pm-stat-label{font-size:11px;color:#666;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px;line-height:1.4}
+.pm-stat-value{font-size:28px;font-weight:500;color:#fff;margin-bottom:4px}
+.pm-stat-sub{font-size:11px;color:#555}
+.pm-stat-card.green .pm-stat-value{color:#2ecc71}
+.pm-stat-card.amber .pm-stat-value{color:#f39c12}
+.pm-stat-card.blue .pm-stat-value{color:#5dade2}
+.pm-stat-card.coral .pm-stat-value{color:#e74c3c}
+.pm-stat-card.purple .pm-stat-value{color:#a29bfe}
+.pm-section-title{font-size:12px;color:#666;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid #2a2a2a}
+.pm-note{background:#1a1a1a;border:1px dashed #333;border-radius:8px;padding:14px 16px;font-size:12px;color:#555;text-align:center;margin-top:8px}
+.pm-avatar{width:52px;height:52px;border-radius:50%;background:#1a2744;border:2px solid #2e4070;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px}
+.sop-section{margin-bottom:24px}
+.sop-section h3{font-size:13px;font-weight:500;color:#fff;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #2a2a2a;text-transform:uppercase;letter-spacing:0.05em}
+.sop-item{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid #1e1e1e;align-items:flex-start}
+.sop-item:last-child{border-bottom:none}
+.sop-num{font-size:12px;color:#555;min-width:22px;padding-top:1px}
+.sop-text{font-size:13px;color:#ccc;line-height:1.5}
+.sop-note{background:#1a1a1a;border-left:3px solid #444;padding:10px 14px;border-radius:0 6px 6px 0;font-size:12px;color:#888;margin-top:8px;line-height:1.5}
+.sop-placeholder{background:#1a1a1a;border:1px dashed #333;border-radius:8px;padding:20px;text-align:center;color:#555;font-size:13px}
+.sop-placeholder .ph-icon{font-size:28px;margin-bottom:8px}
+.sys-card{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:16px;cursor:pointer;transition:border-color 0.15s}
+.sys-card:hover{border-color:#555;background:#222}
+.sys-card-icon{font-size:24px;margin-bottom:8px}
+.sys-card-title{font-size:13px;font-weight:500;color:#fff;margin-bottom:4px}
+.sys-card-desc{font-size:11px;color:#666;line-height:1.4}
+</style>
+</head>
+<body>
+
+<!-- UTIL BAR -->
+<div class="util-bar">
+  <div class="site-title">Legacy Homes Project Management Dashboard</div>
+  <div class="util-right" id="util-right">
+    <!-- injected by JS based on login state -->
+  </div>
+</div>
+
+<!-- BRAND BAR -->
+<div class="brand-bar">
+  <img id="site-logo" alt="Legacy Homes Investments" />
+  <div class="brand-divider"></div>
+  <div>
+    <div class="brand-main">Legacy Homes</div>
+    <div class="brand-sub">Project Management Hub &nbsp;&middot;&nbsp; Columbus, OH</div>
+  </div>
+  <div class="brand-search">
+    <input type="text" id="site-search" placeholder="Search..." onkeydown="if(event.key==='Enter')doSearch()" />
+    <button class="brand-search-btn" onclick="doSearch()">🔍</button>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav" id="nav" style="display:none">
+  <div class="ni has-dd" id="pd-t">⬡ Proj. Director ▾
+    <div class="dd" id="pd-d">
+      <div class="ddl">Project Director</div>
+      <div class="ddi" onclick="openProjectDashboard()">📊 Project Dashboard</div>
+      <div class="ddi" onclick="openDesignDashboard()">🎨 Design Dashboard</div>
+      <div class="ddi" onclick="openTVDashboard()">📺 TV Dashboard</div>
+    </div>
+  </div>
+  <div class="ni has-dd" id="pm-t">🏗 Proj. Manager ▾
+    <div class="dd" id="pm-d">
+      <div class="ddl">Project Manager</div>
+      <div class="ddi" onclick="openProjectDashboard()">📊 Project Dashboard</div>
+      <div class="ddi" onclick="openDesignDashboard()">🎨 Design Dashboard</div>
+      <div class="ddi" onclick="openTVDashboard()">📺 TV Dashboard</div>
+    </div>
+  </div>
+  <div class="ni has-dd" id="am-t">👤 Asst. Manager ▾
+    <div class="dd" id="am-d">
+      <div class="ddl">Assistant Manager</div>
+      <div class="ddi" onclick="openPMAssistantDashboard()">🗂 PM Assistant Dashboard</div>
+      <div class="ddi" onclick="openProjectDashboard()">📊 Project Dashboard</div>
+      <div class="ddi" onclick="openDesignDashboard()">🎨 Design Dashboard</div>
+      <div class="ddi" onclick="openTVDashboard()">📺 TV Dashboard</div>
+    </div>
+  </div>
+  <div class="ni has-dd" id="adm-t">🏢 Admin. Mgr ▾
+    <div class="dd" id="adm-d">
+      <div class="ddl">Administrative Manager</div>
+      <div class="ddi" onclick="openAdminDashboard()">🏛 Admin Dashboard</div>
+      <div class="ddi" onclick="openProjectDashboard()">📊 Project Dashboard</div>
+      <div class="ddi" onclick="openDesignDashboard()">🎨 Design Dashboard</div>
+      <div class="ddi" onclick="openTVDashboard()">📺 TV Dashboard</div>
+    </div>
+  </div>
+  <div class="ni has-dd" id="va-t">💻 VA Assistants ▾
+    <div class="dd" id="va-d">
+      <div class="ddl">VA Assistants</div>
+      <div class="ddi" onclick="openSeniorVADashboard()">💼 Senior VA Dashboard</div>
+      <div class="ddi" onclick="openVAAdminDashboard()">🖥 VA Admin Dashboard</div>
+      <div class="ddi" onclick="openProjectDashboard()">📊 Project Dashboard</div>
+      <div class="ddi" onclick="openDesignDashboard()">🎨 Design Dashboard</div>
+      <div class="ddi" onclick="openTVDashboard()">📺 TV Dashboard</div>
+    </div>
+  </div>
+  <div class="ni has-dd" id="arch-t">📐 Architect ▾
+    <div class="dd" id="arch-d">
+      <div class="ddl">Architect</div>
+      <div class="ddi" onclick="openArchitectDashboard()">📐 Architect Dashboard</div>
+      <div class="ddi" onclick="openProjectDashboard()">📊 Project Dashboard</div>
+      <div class="ddi" onclick="openDesignDashboard()">🎨 Design Dashboard</div>
+      <div class="ddi" onclick="openTVDashboard()">📺 TV Dashboard</div>
+    </div>
+  </div>
+  <div class="ni has-dd" id="data-t">💾 Data Dash ▾
+    <div class="dd" id="data-d" style="min-width:240px">
+      <div class="ddl">Financials</div>
+      <div class="ddi" id="dd-overhead" onclick="openDataSection('overhead')">💼 PT Overhead &amp; Expenses</div>
+      <div class="ddi" id="dd-teamspent" onclick="openDataSection('teamspent')">💸 Project Team Spent</div>
+      <div class="ddl" style="margin-top:4px">Project Managers</div>
+      <div class="ddi" onclick="openPMDashboard()">👥 PM Team Overview</div>
+    </div>
+  </div>
+  <div class="ni has-dd" id="rep-t">📊 Reporting ▾
+    <div class="dd" id="rep-d" style="min-width:220px">
+      <div class="ddl">Reports</div>
+      <div class="ddi">🗓 Biweekly Reports</div>
+      <div class="ddi" onclick="openMonthlyReports()">📅 Monthly Reports</div>
+      <div class="ddi">📆 Yearly Reports</div>
+      <div class="ddi">🏁 End of Project Reports</div>
+    </div>
+  </div>
+  <div class="ni has-dd" id="sop-t">📖 SOPs ▾
+    <div class="dd" id="sop-d" style="min-width:280px">
+      <div class="ddl">Job Role SOPs</div>
+      <div class="ddi" onclick="openSOP('role','Project Director')">⬡ Project Director SOP</div>
+      <div class="ddi" onclick="openSOP('role','Project Manager')">🏗 Project Manager SOP</div>
+      <div class="ddi" onclick="openSOP('role','Administrative Assistant')">🏢 Administrative Assistant SOP</div>
+      <div class="ddi" onclick="openSOP('role','Senior Administrative Assistant')">🏢 Senior Administrative Assistant SOP</div>
+      <div class="ddi" onclick="openSOP('role','Virtual Administrative Assistant')">💻 Virtual Administrative Assistant SOP</div>
+      <div class="ddi" onclick="openSOP('role','Senior Virtual Administrative Assistant')">💻 Senior Virtual Administrative Assistant SOP</div>
+      <div class="ddi" onclick="openSOP('role','Start of Project Assistant')">🚀 Start of Project Assistant SOP</div>
+      <div class="ddi" onclick="openSOP('role','End of Project Assistant')">🏁 End of Project Assistant SOP</div>
+      <div class="ddi" onclick="openSOP('role','Assistant / Intern')">🎓 Assistant / Intern SOP</div>
+      <div class="ddi" onclick="openSOP('role','VA Assistant')">💻 VA Assistant SOP</div>
+      <div class="ddi" onclick="openSOP('role','Architect')">📐 Architect SOP</div>
+      <div class="ddl" style="margin-top:4px">Systems &amp; Processes</div>
+      <div class="ddi" onclick="openSOP('systems','')">⚙️ Systems &amp; Processes SOPs →</div>
+    </div>
+  </div>
+  <div class="ni has-dd" id="tools-t">🔧 Tools ▾
+    <div class="dd" id="tools-d" style="min-width:220px">
+      <div class="ddl">External Tools</div>
+      <div class="ddi" onclick="window.open('https://signin.eagleview.com/','_blank')">🦅 Eagleview ↗</div>
+      <div class="ddi" onclick="window.open('https://www.lowes.com','_blank')">🔨 Lowes ↗</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN BODY -->
+<div class="dash-body" id="dash-body">
+  <div class="empty-state">
+    <div class="icon">🏠</div>
+    <p>Sign in to access the Legacy Homes dashboard</p>
+  </div>
+</div>
+
+<!-- ===== SOP ROLE MODAL ===== -->
+<div class="overlay" id="sop-modal">
+  <div class="modal" style="max-width:700px;padding:0;overflow:hidden">
+    <div style="background:#111;padding:20px 28px;border-bottom:1px solid #2a2a2a;display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div id="sop-modal-title" style="font-size:17px;font-weight:500;color:#fff"></div>
+        <div style="font-size:12px;color:#666;margin-top:3px">Standard Operating Procedure</div>
+      </div>
+      <button class="modal-close" style="position:static" onclick="closeModal('sop-modal')">✕</button>
+    </div>
+    <div style="padding:28px;max-height:70vh;overflow-y:auto" id="sop-modal-body"></div>
+  </div>
+</div>
+
+<!-- ===== SYSTEMS & PROCESSES MODAL ===== -->
+<div class="overlay" id="systems-modal">
+  <div class="modal" style="max-width:720px;padding:0;overflow:hidden">
+    <div style="background:#111;padding:20px 28px;border-bottom:1px solid #2a2a2a;display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div style="font-size:17px;font-weight:500;color:#fff">⚙️ Systems &amp; Processes SOPs</div>
+        <div style="font-size:12px;color:#666;margin-top:3px">Click any system to view its SOP</div>
+      </div>
+      <button class="modal-close" style="position:static" onclick="closeModal('systems-modal')">✕</button>
+    </div>
+    <div style="padding:28px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" id="systems-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SYSTEMS SOP DETAIL MODAL ===== -->
+<div class="overlay" id="sys-sop-modal">
+  <div class="modal" style="max-width:700px;padding:0;overflow:hidden">
+    <div style="background:#111;padding:20px 28px;border-bottom:1px solid #2a2a2a;display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div id="sys-sop-title" style="font-size:17px;font-weight:500;color:#fff"></div>
+        <div style="font-size:12px;color:#666;margin-top:3px">Systems &amp; Processes SOP &nbsp;·&nbsp; <span style="color:#888;cursor:pointer;text-decoration:underline" onclick="closeModal('sys-sop-modal');openModal('systems-modal')">← Back to Systems</span></div>
+      </div>
+      <button class="modal-close" style="position:static" onclick="closeModal('sys-sop-modal')">✕</button>
+    </div>
+    <div style="padding:28px;max-height:70vh;overflow-y:auto" id="sys-sop-body"></div>
+  </div>
+</div>
+
+<!-- ===== ACCESS DENIED MODAL ===== -->
+<div class="overlay" id="access-denied-modal">
+  <div class="modal" style="max-width:400px;text-align:center">
+    <button class="modal-close" onclick="closeModal('access-denied-modal')">✕</button>
+    <div style="font-size:36px;margin-bottom:12px">🔒</div>
+    <h2 style="margin-bottom:8px">Access Restricted</h2>
+    <p class="sub" id="access-denied-msg" style="margin-bottom:24px"></p>
+    <button class="btn-full outline" onclick="closeModal('access-denied-modal')">Go Back</button>
+  </div>
+</div>
+
+<!-- ===== PM DASHBOARD MODAL ===== -->
+<div class="overlay" id="pm-dash-modal">
+  <div class="modal" style="max-width:1080px;width:95%;padding:0;overflow:hidden">
+    <div style="background:#111;padding:20px 28px;border-bottom:1px solid #2a2a2a;display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div id="pm-dash-title" style="font-size:17px;font-weight:500;color:#fff">👥 Project Manager Team Overview</div>
+        <div style="font-size:12px;color:#666;margin-top:3px">Individual performance metrics — all project managers</div>
+      </div>
+      <button class="modal-close" style="position:static" onclick="closeModal('pm-dash-modal')">✕</button>
+    </div>
+    <div style="padding:32px;max-height:80vh;overflow-y:auto" id="pm-dash-body"></div>
+  </div>
+</div>
+
+<!-- ===== SEARCH RESULTS MODAL ===== -->
+<div class="overlay" id="search-modal">
+  <div class="modal" style="max-width:580px;padding:0;overflow:hidden">
+    <div style="background:#111;padding:14px 20px;border-bottom:1px solid #2a2a2a;display:flex;align-items:center;gap:10px">
+      <span style="font-size:15px">🔍</span>
+      <input type="text" id="search-modal-input" placeholder="Search anything..." style="flex:1;background:transparent;border:none;outline:none;font-size:14px;color:#fff" oninput="liveSearch(this.value)" />
+      <button class="modal-close" style="position:static;font-size:18px" onclick="closeModal('search-modal')">✕</button>
+    </div>
+    <div id="search-results" style="max-height:65vh;overflow-y:auto;padding:8px 0"></div>
+  </div>
+</div>
+
+<!-- ===== MONTHLY REPORTS MODAL ===== -->
+<div class="overlay" id="monthly-modal" style="align-items:center;padding:20px">
+  <div style="background:#111;width:100%;max-width:1100px;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;height:90vh;border:1px solid #2a2a2a">
+    <!-- Modal header -->
+    <div style="background:#0a0a0a;padding:14px 20px;border-bottom:1px solid #2a2a2a;display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+      <div style="font-size:15px;font-weight:500;color:#fff;display:flex;align-items:center;gap:8px">📅 Monthly Reports</div>
+      <button class="modal-close" style="position:static" onclick="closeModal('monthly-modal')">✕</button>
+    </div>
+    <!-- Body: sidebar + content -->
+    <div style="display:flex;flex:1;overflow:hidden">
+      <!-- LEFT SIDEBAR -->
+      <div id="mr-sidebar" style="width:180px;flex-shrink:0;background:#0d0d0d;border-right:1px solid #2a2a2a;overflow-y:auto;padding:12px 0"></div>
+      <!-- RIGHT CONTENT -->
+      <div id="mr-content" style="flex:1;overflow-y:auto;padding:0;background:#111"></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===== PROPERTY MODAL ===== -->
+<div id="prop-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:2000;display:none;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:12px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;border:0.5px solid #e0e4ec">
+    <div style="padding:13px 18px;border-bottom:0.5px solid #e0e4ec;display:flex;align-items:center;justify-content:space-between">
+      <div id="prop-modal-title" style="font-size:14px;font-weight:500;color:#111">Add New Property</div>
+      <button onclick="closePropModal()" style="background:none;border:none;font-size:17px;color:#aaa;cursor:pointer">✕</button>
+    </div>
+    <div id="prop-modal-body" style="padding:16px 18px"></div>
+    <div style="padding:10px 18px;border-top:0.5px solid #e0e4ec;display:flex;justify-content:flex-end;gap:8px">
+      <button onclick="closePropModal()" style="padding:7px 14px;background:transparent;color:#888;border:0.5px solid #ccc;border-radius:6px;font-size:13px;cursor:pointer">Cancel</button>
+      <button id="prop-modal-save" style="padding:7px 18px;background:#111;color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SIGN IN MODAL ===== -->
+<div class="overlay" id="signin-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('signin-modal')">✕</button>
+    <h2>Sign in</h2>
+    <p class="sub">Use your @legacyohiohomes.com email</p>
+    <div class="error-msg" id="signin-error"></div>
+    <div class="success-msg" id="signin-success"></div>
+    <div class="form-row"><label>Email</label><input type="email" id="signin-email" placeholder="you@legacyohiohomes.com" /></div>
+    <div class="form-row"><label>Password</label><input type="password" id="signin-pass" placeholder="••••••••" /></div>
+    <button class="btn-full" onclick="doSignIn()">Sign In</button>
+    <div class="form-switch">Don't have an account? <a onclick="switchModal('signin-modal','register-modal')">Register here</a></div>
+  </div>
+</div>
+
+<!-- ===== REGISTER MODAL ===== -->
+<div class="overlay" id="register-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('register-modal')">✕</button>
+    <h2>Create account</h2>
+    <p class="sub">Only @legacyohiohomes.com emails are permitted. Your account requires admin approval before access is granted.</p>
+    <div class="error-msg" id="reg-error"></div>
+    <div class="success-msg" id="reg-success"></div>
+    <div class="form-two">
+      <div class="form-row"><label>First name</label><input type="text" id="reg-first" placeholder="First" /></div>
+      <div class="form-row"><label>Last name</label><input type="text" id="reg-last" placeholder="Last" /></div>
+    </div>
+    <div class="form-row"><label>Company email</label><input type="email" id="reg-email" placeholder="you@legacyohiohomes.com" /></div>
+    <div class="form-row"><label>Phone number</label><input type="tel" id="reg-phone" placeholder="(614) 555-0100" /></div>
+    <div class="form-row">
+      <label>Job role</label>
+      <select id="reg-role">
+        <option value="">— Select your role —</option>
+        <option value="Architect">Architect</option>
+        <option value="Project Director">Project Director</option>
+        <option value="Project Manager">Project Manager</option>
+        <option value="Senior Administrative Assistant">Senior Administrative Assistant</option>
+        <option value="Administrative Assistant">Administrative Assistant</option>
+        <option value="Senior Virtual Administrative Assistant">Senior Virtual Administrative Assistant</option>
+        <option value="Virtual Administrative Assistant">Virtual Administrative Assistant</option>
+        <option value="Start of Project Assistant">Start of Project Assistant</option>
+        <option value="End of Project Assistant">End of Project Assistant</option>
+        <option value="Assistant / Intern">Assistant / Intern</option>
+      </select>
+    </div>
+    <div class="form-row"><label>Password</label><input type="password" id="reg-pass" placeholder="Min. 8 characters" /></div>
+    <div class="form-row"><label>Confirm password</label><input type="password" id="reg-pass2" placeholder="Repeat password" /></div>
+    <button class="btn-full" onclick="doRegister()">Submit for Approval</button>
+    <div class="form-switch">Already have an account? <a onclick="switchModal('register-modal','signin-modal')">Sign in</a></div>
+  </div>
+</div>
+
+<!-- ===== MY ACCOUNT MODAL ===== -->
+<div class="overlay" id="account-modal">
+  <div class="modal" style="max-width:520px">
+    <button class="modal-close" onclick="closeModal('account-modal')">✕</button>
+    <h2>My Account</h2>
+    <p class="sub" id="acct-sub"></p>
+
+    <div class="tab-row">
+      <div class="tab active" onclick="switchTab('tab-profile')">Profile</div>
+      <div class="tab" onclick="switchTab('tab-password')">Change Password</div>
+    </div>
+
+    <!-- PROFILE TAB -->
+    <div class="tab-content active" id="tab-profile">
+      <div class="error-msg" id="profile-error"></div>
+      <div class="success-msg" id="profile-success"></div>
+      <div class="section-label">Account info</div>
+      <div class="info-row"><span class="label">Email</span><span class="val" id="acct-email-display"></span></div>
+      <div class="info-row"><span class="label">Job role</span><span class="val"><span class="role-pill" id="acct-role-display"></span></span></div>
+      <div class="info-row"><span class="label">Access level</span><span class="val"><span id="acct-access-display"></span></span></div>
+      <div class="section-label" style="margin-top:20px">Edit info</div>
+      <div class="form-two">
+        <div class="form-row"><label>First name</label><input type="text" id="acct-first" /></div>
+        <div class="form-row"><label>Last name</label><input type="text" id="acct-last" /></div>
+      </div>
+      <div class="form-row"><label>Phone number</label><input type="tel" id="acct-phone" /></div>
+      <button class="btn-full" onclick="saveProfile()">Save Changes</button>
+    </div>
+
+    <!-- PASSWORD TAB -->
+    <div class="tab-content" id="tab-password">
+      <div class="error-msg" id="pw-error"></div>
+      <div class="success-msg" id="pw-success"></div>
+      <div class="form-row" style="margin-top:8px"><label>Current password</label><input type="password" id="pw-current" placeholder="••••••••" /></div>
+      <div class="form-row"><label>New password</label><input type="password" id="pw-new" placeholder="Min. 8 characters" /></div>
+      <div class="form-row"><label>Confirm new password</label><input type="password" id="pw-confirm" placeholder="Repeat new password" /></div>
+      <button class="btn-full" onclick="changePassword()">Update Password</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADMIN PANEL MODAL ===== -->
+<div class="overlay" id="admin-modal">
+  <div class="modal" style="max-width:820px;padding:28px">
+    <button class="modal-close" onclick="closeModal('admin-modal')">✕</button>
+    <h2>Admin Panel</h2>
+    <p class="sub">Manage user registrations and access levels</p>
+
+    <div class="tab-row">
+      <div class="tab active" onclick="switchAdminTab('tab-pending')">Pending Approval <span id="pending-count-badge"></span></div>
+      <div class="tab" onclick="switchAdminTab('tab-users')">All Users</div>
+    </div>
+
+    <div class="tab-content active" id="tab-pending">
+      <div id="pending-list"></div>
+    </div>
+    <div class="tab-content" id="tab-users">
+      <div id="users-list"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===================== DATA STORE =====================
+const LOGO_B64 = "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";
+
+// Seed: Bruce as super admin, already approved
+const SEED_USERS = [
+  {
+    id: 1,
+    firstName: "Bruce",
+    lastName: "",
+    email: "bruce@legacyohiohomes.com",
+    phone: "(614) 000-0000",
+    role: "Project Director",
+    password: "Legacy2024!",
+    status: "approved",
+    accessLevel: "full",
+    isSuperAdmin: true,
+    createdAt: "2024-01-01"
+  },
+  {
+    id: 2,
+    firstName: "Tommy",
+    lastName: "Harr",
+    email: "tom@legacyohiohomes.com",
+    phone: "",
+    role: "Project Director",
+    password: "Legacy2024!",
+    status: "approved",
+    accessLevel: "full",
+    isSuperAdmin: true,
+    createdAt: "2024-01-01"
+  }
+];
+
+function getUsers() {
+  const s = localStorage.getItem("lh_users");
+  return s ? JSON.parse(s) : SEED_USERS;
+}
+function saveUsers(u) { localStorage.setItem("lh_users", JSON.stringify(u)); }
+function getSession() {
+  const s = localStorage.getItem("lh_session");
+  return s ? JSON.parse(s) : null;
+}
+function saveSession(u) { localStorage.setItem("lh_session", JSON.stringify(u)); }
+function clearSession() { localStorage.removeItem("lh_session"); }
+
+
+// ===================== KNOWN ROLE EMAILS =====================
+const KNOWN_ROLE_EMAILS = {
+  "bruce@legacyohiohomes.com":       { role: "Project Director",                    name: "Bruce" },
+  "tom@legacyohiohomes.com":         { role: "Project Director",                    name: "Tommy Harr" },
+  "andrewscrape@legacyohiohomes.com":{ role: "Project Manager",                     name: "Andrew" },
+  "isaiah@legacyohiohomes.com":      { role: "Project Manager",                     name: "Isaiah" },
+  "marlo@legacyohiohomes.com":       { role: "Senior Administrative Assistant",     name: "Marlo" },
+  "idoko@legacyohiohomes.com":      { role: "Senior Virtual Administrative Assistant", name: "Idoko" },
+};
+
+// Init users if not set
+if (!localStorage.getItem("lh_users")) saveUsers(SEED_USERS);
+
+// ===================== LOGO =====================
+document.getElementById("site-logo").src = "data:image/png;base64," + LOGO_B64;
+
+
+// ===================== LIVE PROPERTY STAT HELPERS =====================
+const ACTIVE_PHASES = [
+  "Framing, MEPS, Insulation",
+  "Drywall / Exterior Work",
+  "Finishes",
+  "Pre List / Punchout Process"
+];
+const ACTIVE_PHASES_FULL = [
+  "Framing, MEPS, Insulation",
+  "Drywall / Exterior Work",
+  "Finishes",
+  "Pre List / Punchout Process"
+];
+
+function countActive()        { return (typeof propCards!=='undefined') ? propCards.filter(c=>ACTIVE_PHASES.includes(c.phase)).length : 0; }
+function countOnMarket()      { return (typeof propCards!=='undefined') ? propCards.filter(c=>c.phase==="Listed on the Market").length : 0; }
+function countWaitingPermit() { return (typeof propCards!=='undefined') ? propCards.filter(c=>c.phase==="Waiting Permits").length : 0; }
+function countClosedThisYear(){
+  if (typeof propCards==='undefined') return 0;
+  const yr = new Date().getFullYear();
+  return propCards.filter(c => {
+    if (c.phase !== "Closed") return false;
+    if (!c.end) return false;
+    return new Date(c.end).getFullYear() === yr;
+  }).length;
+}
+function countActiveForPM(pmName) {
+  if (typeof propCards==='undefined') return 0;
+  return propCards.filter(c=>ACTIVE_PHASES.includes(c.phase) && c.pm===pmName).length;
+}
+
+// ===================== INIT =====================
+function init() {
+  const session = getSession();
+  const utilRight = document.getElementById("util-right");
+  if (session) {
+    const users = getUsers();
+    const user = users.find(u => u.id === session.id);
+    if (!user || user.status !== "approved") {
+      clearSession();
+      renderLoggedOut();
+      document.getElementById("nav").style.display = "none";
+      return;
+    }
+    utilRight.innerHTML = `
+      <div class="ubtn" onclick="goHome()" title="Home">🏠 Home</div>
+      <div class="udiv"></div>
+      ${user.accessLevel === "full" || user.isSuperAdmin ? `<div class="ubtn" onclick="openAdmin()">⚙ Admin Panel</div><div class="udiv"></div>` : ""}
+      <div class="ubtn" onclick="openAccount()">👤 ${user.firstName} ${user.lastName}</div>
+      <div class="udiv"></div>
+      <div class="ubtn" onclick="doSignOut()">Sign Out</div>
+    `;
+    document.getElementById("nav").style.display = "flex";
+    document.getElementById("dash-body").innerHTML = renderGenericHome(user);
+  } else {
+    renderLoggedOut();
+  }
+}
+
+function renderLoggedOut() {
+  const nav = document.getElementById("nav");
+  if (nav) nav.style.display = "none";
+  const utilRight = document.getElementById("util-right");
+  utilRight.innerHTML = `
+    <div class="ubtn" onclick="openModal('signin-modal')">👤 My Account</div>
+    <div class="udiv"></div>
+    <div class="ubtn" onclick="openModal('signin-modal')">Sign In</div>
+    <div class="udiv"></div>
+    <div class="ubtn primary" onclick="openModal('register-modal')">Register</div>
+  `;
+  document.getElementById("dash-body").innerHTML = `
+    <div style="min-height:500px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px;text-align:center;background:linear-gradient(180deg,#111 0%,#1a1a1a 100%)">
+      <div style="margin-bottom:28px">
+        <div style="font-size:11px;color:#444;text-transform:uppercase;letter-spacing:0.15em;margin-bottom:12px">Welcome to</div>
+        <div style="font-size:36px;font-weight:500;color:#fff;letter-spacing:-0.5px;margin-bottom:6px">Legacy Homes</div>
+        <div style="font-size:15px;color:#555;letter-spacing:0.05em">Project Management Hub &nbsp;·&nbsp; Columbus, OH</div>
+      </div>
+      <div style="width:48px;height:1px;background:#2a2a2a;margin:0 auto 28px"></div>
+      <div style="font-size:13px;color:#555;max-width:380px;line-height:1.7;margin-bottom:36px">
+        A centralized platform for project tracking, reporting, team management, and operations — built exclusively for the Legacy Homes team.
+      </div>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button onclick="openModal('signin-modal')" style="padding:12px 32px;background:#fff;color:#111;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:0.02em">Sign In</button>
+        <button onclick="openModal('register-modal')" style="padding:12px 32px;background:transparent;color:#888;border:1px solid #2a2a2a;border-radius:8px;font-size:14px;cursor:pointer;letter-spacing:0.02em">Request Access</button>
+      </div>
+      <div style="margin-top:48px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:640px;width:100%">
+        <div style="background:#111;border:1px dashed #2a2a2a;border-radius:10px;overflow:hidden;aspect-ratio:4/3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:default">
+          <div style="font-size:22px;opacity:0.3">📷</div>
+          <div style="font-size:10px;color:#333;text-transform:uppercase;letter-spacing:0.08em">Team Photo</div>
+        </div>
+        <div style="background:#111;border:1px dashed #2a2a2a;border-radius:10px;overflow:hidden;aspect-ratio:4/3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:default">
+          <div style="font-size:22px;opacity:0.3">📷</div>
+          <div style="font-size:10px;color:#333;text-transform:uppercase;letter-spacing:0.08em">Team Photo</div>
+        </div>
+        <div style="background:#111;border:1px dashed #2a2a2a;border-radius:10px;overflow:hidden;aspect-ratio:4/3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:default">
+          <div style="font-size:22px;opacity:0.3">📷</div>
+          <div style="font-size:10px;color:#333;text-transform:uppercase;letter-spacing:0.08em">Team Photo</div>
+        </div>
+      </div>
+      <div style="margin-top:40px;font-size:11px;color:#333">Access is restricted to @legacyohiohomes.com team members only.</div>
+    </div>
+  `;
+}
+
+// ===================== MODALS =====================
+function openModal(id) { document.getElementById(id).classList.add("show"); }
+function closeModal(id) { document.getElementById(id).classList.remove("show"); }
+function switchModal(from, to) { closeModal(from); openModal(to); }
+
+// ===================== SIGN IN =====================
+function doSignIn() {
+  const email = document.getElementById("signin-email").value.trim().toLowerCase();
+  const pass = document.getElementById("signin-pass").value;
+  const err = document.getElementById("signin-error");
+  const ok = document.getElementById("signin-success");
+  err.style.display = "none"; ok.style.display = "none";
+
+  if (!email || !pass) { showErr(err, "Please fill in all fields."); return; }
+  if (!email.endsWith("@legacyohiohomes.com")) { showErr(err, "Only @legacyohiohomes.com email addresses are allowed."); return; }
+
+  const users = getUsers();
+  const user = users.find(u => u.email === email && u.password === pass);
+  if (!user) { showErr(err, "Invalid email or password."); return; }
+  if (user.status === "pending") { showErr(err, "Your account is pending admin approval. You will be notified once approved."); return; }
+  if (user.status === "denied") { showErr(err, "Your account registration was not approved. Contact Bruce@legacyohiohomes.com."); return; }
+
+  saveSession({ id: user.id });
+  closeModal("signin-modal");
+  init();
+}
+
+// ===================== REGISTER =====================
+function doRegister() {
+  const first = document.getElementById("reg-first").value.trim();
+  const last = document.getElementById("reg-last").value.trim();
+  const email = document.getElementById("reg-email").value.trim().toLowerCase();
+  const phone = document.getElementById("reg-phone").value.trim();
+  const role = document.getElementById("reg-role").value;
+  const pass = document.getElementById("reg-pass").value;
+  const pass2 = document.getElementById("reg-pass2").value;
+  const err = document.getElementById("reg-error");
+  const ok = document.getElementById("reg-success");
+  err.style.display = "none"; ok.style.display = "none";
+
+  if (!first || !last || !email || !phone || !role || !pass || !pass2) { showErr(err, "Please fill in all fields."); return; }
+  if (!email.endsWith("@legacyohiohomes.com")) { showErr(err, "Registration is only open to @legacyohiohomes.com email addresses."); return; }
+  if (pass.length < 8) { showErr(err, "Password must be at least 8 characters."); return; }
+  if (pass !== pass2) { showErr(err, "Passwords do not match."); return; }
+
+  const users = getUsers();
+  if (users.find(u => u.email === email)) { showErr(err, "An account with this email already exists."); return; }
+
+  const newUser = {
+    id: Date.now(),
+    firstName: first,
+    lastName: last,
+    email: email,
+    phone: phone,
+    role: role,
+    password: pass,
+    status: "pending",
+    accessLevel: "standard",
+    isSuperAdmin: false,
+    createdAt: new Date().toISOString().split("T")[0]
+  };
+  users.push(newUser);
+  saveUsers(users);
+
+  ok.textContent = "Registration submitted! Bruce@legacyohiohomes.com will review and approve your account.";
+  ok.style.display = "block";
+  document.getElementById("reg-first").value = "";
+  document.getElementById("reg-last").value = "";
+  document.getElementById("reg-email").value = "";
+  document.getElementById("reg-phone").value = "";
+  document.getElementById("reg-role").value = "";
+  document.getElementById("reg-pass").value = "";
+  document.getElementById("reg-pass2").value = "";
+}
+
+// ===================== SIGN OUT =====================
+function doSignOut() { clearSession(); init(); }
+
+// ===================== ACCOUNT =====================
+function openAccount() {
+  const session = getSession();
+  if (!session) { openModal("signin-modal"); return; }
+  const users = getUsers();
+  const user = users.find(u => u.id === session.id);
+  if (!user) return;
+
+  document.getElementById("acct-sub").textContent = user.email;
+  document.getElementById("acct-email-display").textContent = user.email;
+  document.getElementById("acct-role-display").textContent = user.role;
+  const alEl = document.getElementById("acct-access-display");
+  const alMap = { full: ["Full Access","al-full"], standard: ["Standard Access","al-standard"], readonly: ["Read Only","al-readonly"] };
+  const [label, cls] = alMap[user.accessLevel] || ["Standard","al-standard"];
+  alEl.innerHTML = `<span class="access-level-badge ${cls}">${label}</span>`;
+  document.getElementById("acct-first").value = user.firstName;
+  document.getElementById("acct-last").value = user.lastName;
+  document.getElementById("acct-phone").value = user.phone;
+
+  switchTab("tab-profile");
+  openModal("account-modal");
+}
+
+function saveProfile() {
+  const session = getSession();
+  const users = getUsers();
+  const idx = users.findIndex(u => u.id === session.id);
+  const err = document.getElementById("profile-error");
+  const ok = document.getElementById("profile-success");
+  err.style.display="none"; ok.style.display="none";
+
+  const first = document.getElementById("acct-first").value.trim();
+  const last = document.getElementById("acct-last").value.trim();
+  const phone = document.getElementById("acct-phone").value.trim();
+  if (!first || !last) { showErr(err, "First and last name are required."); return; }
+
+  users[idx].firstName = first;
+  users[idx].lastName = last;
+  users[idx].phone = phone;
+  saveUsers(users);
+  saveSession({ id: users[idx].id });
+  ok.textContent = "Profile updated successfully.";
+  ok.style.display = "block";
+  init();
+}
+
+function changePassword() {
+  const session = getSession();
+  const users = getUsers();
+  const idx = users.findIndex(u => u.id === session.id);
+  const err = document.getElementById("pw-error");
+  const ok = document.getElementById("pw-success");
+  err.style.display="none"; ok.style.display="none";
+
+  const cur = document.getElementById("pw-current").value;
+  const nw = document.getElementById("pw-new").value;
+  const conf = document.getElementById("pw-confirm").value;
+
+  if (!cur || !nw || !conf) { showErr(err, "Please fill in all fields."); return; }
+  if (users[idx].password !== cur) { showErr(err, "Current password is incorrect."); return; }
+  if (nw.length < 8) { showErr(err, "New password must be at least 8 characters."); return; }
+  if (nw !== conf) { showErr(err, "New passwords do not match."); return; }
+
+  users[idx].password = nw;
+  saveUsers(users);
+  ok.textContent = "Password updated successfully.";
+  ok.style.display = "block";
+  document.getElementById("pw-current").value = "";
+  document.getElementById("pw-new").value = "";
+  document.getElementById("pw-confirm").value = "";
+}
+
+// ===================== ADMIN PANEL =====================
+function openAdmin() {
+  const session = getSession();
+  if (!session) return;
+  const users = getUsers();
+  const me = users.find(u => u.id === session.id);
+  if (!me || (me.accessLevel !== "full" && !me.isSuperAdmin)) return;
+
+  renderAdminPending();
+  renderAdminUsers();
+  switchAdminTab("tab-pending");
+  openModal("admin-modal");
+}
+
+function renderAdminPending() {
+  const users = getUsers();
+  const pending = users.filter(u => u.status === "pending");
+  const badge = document.getElementById("pending-count-badge");
+  badge.innerHTML = pending.length > 0 ? `<span style="background:#c0392b;color:#fff;border-radius:99px;padding:1px 7px;font-size:10px;margin-left:6px">${pending.length}</span>` : "";
+
+  const el = document.getElementById("pending-list");
+  if (pending.length === 0) {
+    el.innerHTML = `<p style="color:#555;font-size:13px;padding:20px 0;text-align:center">No pending registrations</p>`;
+    return;
+  }
+  el.innerHTML = `
+    <table class="user-table">
+      <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Registered</th><th>Action</th></tr></thead>
+      <tbody>${pending.map(u => `
+        <tr>
+          <td>${u.firstName} ${u.lastName}</td>
+          <td style="color:#888">${u.email}</td>
+          <td><span class="role-pill">${u.role}</span></td>
+          <td style="color:#666">${u.createdAt}</td>
+          <td>
+            <button class="action-btn approve-btn" onclick="approveUser(${u.id})">✓ Approve</button>
+            <button class="action-btn deny-btn" onclick="denyUser(${u.id})">✕ Deny</button>
+          </td>
+        </tr>`).join("")}
+      </tbody>
+    </table>`;
+}
+
+function renderAdminUsers() {
+  const session = getSession();
+  const users = getUsers();
+  const me = users.find(u => u.id === session.id);
+  const approved = users.filter(u => u.status === "approved");
+  const el = document.getElementById("users-list");
+  el.innerHTML = `
+    <table class="user-table">
+      <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Access Level</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>${approved.map(u => `
+        <tr>
+          <td>${u.firstName} ${u.lastName}${u.isSuperAdmin ? ' <span style="color:#f39c12;font-size:10px">★ SUPER ADMIN</span>' : ""}</td>
+          <td style="color:#888;font-size:12px">${u.email}</td>
+          <td><span class="role-pill">${u.role}</span></td>
+          <td>
+            ${u.isSuperAdmin ? '<span style="color:#f39c12;font-size:12px">Super Admin</span>' :
+              `<select class="access-select" onchange="updateAccess(${u.id}, this.value)">
+                <option value="readonly" ${u.accessLevel==="readonly"?"selected":""}>Read Only</option>
+                <option value="standard" ${u.accessLevel==="standard"?"selected":""}>Standard</option>
+                <option value="full" ${u.accessLevel==="full"?"selected":""}>Full Access</option>
+              </select>`}
+          </td>
+          <td><span class="approved-badge">Active</span></td>
+          <td>
+            ${(!u.isSuperAdmin && u.id !== me.id) ? `<button class="revoke-btn" onclick="revokeUser(${u.id})">Revoke Access</button>` : `<span style="color:#444;font-size:11px">—</span>`}
+          </td>
+        </tr>`).join("")}
+      </tbody>
+    </table>
+    <p style="font-size:11px;color:#444;margin-top:12px">Full Access users can access the Admin Panel and approve registrations.</p>`;
+}
+
+function approveUser(id) {
+  const users = getUsers();
+  const idx = users.findIndex(u => u.id === id);
+  if (idx < 0) return;
+  users[idx].status = "approved";
+  saveUsers(users);
+  renderAdminPending();
+  renderAdminUsers();
+}
+
+function denyUser(id) {
+  const users = getUsers();
+  const idx = users.findIndex(u => u.id === id);
+  if (idx < 0) return;
+  users[idx].status = "denied";
+  saveUsers(users);
+  renderAdminPending();
+}
+
+function updateAccess(id, level) {
+  const users = getUsers();
+  const idx = users.findIndex(u => u.id === id);
+  if (idx < 0) return;
+  users[idx].accessLevel = level;
+  saveUsers(users);
+  renderAdminUsers();
+  init();
+}
+
+function revokeUser(id) {
+  if (!confirm("Revoke this user's access? They will no longer be able to sign in.")) return;
+  const users = getUsers();
+  const idx = users.findIndex(u => u.id === id);
+  if (idx < 0) return;
+  users[idx].status = "revoked";
+  saveUsers(users);
+  renderAdminUsers();
+}
+
+// ===================== TABS =====================
+function switchTab(id) {
+  document.querySelectorAll(".tab-content").forEach(el => {
+    if (el.closest("#account-modal")) { el.classList.remove("active"); }
+  });
+  document.querySelectorAll("#account-modal .tab").forEach(t => t.classList.remove("active"));
+  const target = document.getElementById(id);
+  if (target) target.classList.add("active");
+  const idx = ["tab-profile","tab-password"].indexOf(id);
+  const tabs = document.querySelectorAll("#account-modal .tab");
+  if (tabs[idx]) tabs[idx].classList.add("active");
+}
+
+function switchAdminTab(id) {
+  document.querySelectorAll("#admin-modal .tab-content").forEach(el => el.classList.remove("active"));
+  document.querySelectorAll("#admin-modal .tab").forEach(t => t.classList.remove("active"));
+  const target = document.getElementById(id);
+  if (target) target.classList.add("active");
+  const idx = ["tab-pending","tab-users"].indexOf(id);
+  const tabs = document.querySelectorAll("#admin-modal .tab");
+  if (tabs[idx]) tabs[idx].classList.add("active");
+}
+
+// ===================== NAV DROPDOWNS =====================
+[["pd-t","pd-d"],["pm-t","pm-d"],["am-t","am-d"],["adm-t","adm-d"],["va-t","va-d"],["arch-t","arch-d"],["sop-t","sop-d"],["tools-t","tools-d"],["rep-t","rep-d"],["data-t","data-d"]].forEach(([tid,did]) => {
+  const t = document.getElementById(tid), d = document.getElementById(did);
+  t.addEventListener("click", e => {
+    e.stopPropagation();
+    const was = d.classList.contains("open");
+    document.querySelectorAll(".dd").forEach(x => x.classList.remove("open"));
+    document.querySelectorAll(".ni.has-dd").forEach(x => x.classList.remove("on"));
+    if (!was) {
+      d.classList.add("open");
+      t.classList.add("on");
+      if (tid === "data-t") applyDataAccessUI();
+    }
+  });
+});
+document.addEventListener("click", () => {
+  document.querySelectorAll(".dd").forEach(x => x.classList.remove("open"));
+  document.querySelectorAll(".ni.has-dd").forEach(x => x.classList.remove("on"));
+});
+
+// ===================== PROJECT DASHBOARD =====================
+function openProjectDashboard(activeTab) {
+  activeTab = activeTab || 'main';
+  document.querySelectorAll(".dd").forEach(x => x.classList.remove("open"));
+  document.querySelectorAll(".ni.has-dd").forEach(x => x.classList.remove("on"));
+
+  const tabs = [
+    { id: 'main',   label: 'Main Dashboard',   icon: '📊' },
+    { id: 'andrew', label: 'Andrew',            icon: '👤' },
+    { id: 'isaiah', label: 'Isaiah',            icon: '👤' },
+    { id: 'sow',    label: 'SOW / Budgets',     icon: '💰' },
+    { id: 'trello', label: 'Property Dashboard',icon: '🏗' },
+    { id: 'tasks',  label: 'Tasks / Scheduling',icon: '📅' },
+  ];
+
+  const tabBar = tabs.map(t => `
+    <div onclick="openProjectDashboard('${t.id}')" style="padding:11px 16px;font-size:12px;color:${t.id===activeTab?'#111':'#888'};cursor:pointer;border-bottom:2px solid ${t.id===activeTab?'#111':'transparent'};white-space:nowrap;display:inline-flex;align-items:center;gap:5px;margin-bottom:-1px;font-weight:${t.id===activeTab?'500':'400'}">
+      <span>${t.icon}</span>${t.label}
+    </div>`).join('');
+
+  const content = getPDContent(activeTab);
+
+  document.getElementById("dash-body").innerHTML = `
+    <div style="background:#f4f5f7;min-height:500px" id="pd-root">
+      <div style="background:#fff;border-bottom:1.5px solid #e0e4ec;padding:0 20px;display:flex;align-items:stretch;overflow-x:auto;gap:0">
+        ${tabBar}
+      </div>
+      <div id="pd-content">
+        ${content}
+      </div>
+    </div>
+  `;
+}
+
+// ===================== PROPERTY DASHBOARD DATA =====================
+const PROP_PHASES = [
+  {name:"Upcoming Takedowns",             bg:"#FCEBEB",text:"#791F1F",cnt:"#F09595",dot:"#E24B4A"},
+  {name:"Occupied / Closed",              bg:"#F1EFE8",text:"#444441",cnt:"#B4B2A9",dot:"#888780"},
+  {name:"Vacant / On Standby",            bg:"#FAEEDA",text:"#633806",cnt:"#EF9F27",dot:"#EF9F27"},
+  {name:"Pre Construction",               bg:"#E6F1FB",text:"#0C447C",cnt:"#85B7EB",dot:"#378ADD"},
+  {name:"Waiting Permits",                bg:"#FBEAF0",text:"#72243E",cnt:"#ED93B1",dot:"#D4537E"},
+  {name:"Framing, MEPS, Insulation",      bg:"#EAF3DE",text:"#27500A",cnt:"#97C459",dot:"#639922"},
+  {name:"Drywall / Exterior Work",        bg:"#EEEDFE",text:"#3C3489",cnt:"#AFA9EC",dot:"#7F77DD"},
+  {name:"Finishes",                       bg:"#E1F5EE",text:"#085041",cnt:"#5DCAA5",dot:"#1D9E75"},
+  {name:"Pre List / Punchout Process",    bg:"#FAECE7",text:"#712B13",cnt:"#F0997B",dot:"#D85A30"},
+  {name:"Listed on the Market",           bg:"#EAF3DE",text:"#3B6D11",cnt:"#639922",dot:"#3B6D11"},
+  {name:"In Contract",                    bg:"#E6F1FB",text:"#185FA5",cnt:"#378ADD",dot:"#185FA5"},
+  {name:"RTR In Process",                 bg:"#FAEEDA",text:"#854F0B",cnt:"#BA7517",dot:"#BA7517"},
+  {name:"RTR Completed (Pending Closing)",bg:"#CECBF6",text:"#26215C",cnt:"#534AB7",dot:"#534AB7"},
+  {name:"Closed",                         bg:"#EAF3DE",text:"#173404",cnt:"#27500A",dot:"#173404"},
+];
+
+const PROP_TYPES = [
+  "Rental Turn / Flip",
+  "Whole Tail / Flip",
+  "Sub To GC",
+  "Quick Cosmetic",
+  "Full Cosmetic",
+  "Full Rehab No Permit",
+  "Full Rehab Permit",
+];
+
+const SUB_PHASES = [
+  "SOW Creation",
+  "SOW Approval",
+  "Budget Creation",
+  "Budget Approval",
+  "Drawing / Structural Phase",
+  "Pending Permit Approval",
+  "Design Budget Creation",
+  "Design Budget Approval",
+];
+
+// Sub phase → which main dashboard board it feeds
+const SUB_PHASE_BOARD = {
+  "SOW Creation":               "SOW & Budgets",
+  "SOW Approval":               "SOW & Budgets",
+  "Budget Creation":            "SOW & Budgets",
+  "Budget Approval":            "SOW & Budgets",
+  "Drawing / Structural Phase": "Permits & Drawings",
+  "Pending Permit Approval":    "Permits & Drawings",
+  "Design Budget Creation":     "Design Budgets & Design Status",
+  "Design Budget Approval":     "Design Budgets & Design Status",
+};
+
+const PROP_PM_OPTIONS = ["Tommy","Bruce","Alex","Gabe"];
+const PROP_PM_COLORS  = {Tommy:"#e74c3c",Bruce:"#5dade2",Alex:"#f39c12",Gabe:"#a29bfe"};
+const PROP_TYPE_STYLE = {
+  "Rental Turn / Flip":    "background:#EAF3DE;color:#3B6D11",
+  "Whole Tail / Flip":     "background:#E6F1FB;color:#0C447C",
+  "Sub To GC":             "background:#EEEDFE;color:#3C3489",
+  "Quick Cosmetic":        "background:#FAEEDA;color:#633806",
+  "Full Cosmetic":         "background:#FAECE7;color:#712B13",
+  "Full Rehab No Permit":  "background:#FCEBEB;color:#791F1F",
+  "Full Rehab Permit":     "background:#CECBF6;color:#26215C",
+};
+
+let propCards = [
+  {id:1,addr:"1421 Birchwood Dr",phase:"Framing, MEPS, Insulation",type:"Full Rehab Permit",pm:"Andrew",position:"",budget:"$65,000",spent:"$28,000",start:"2026-03-01",end:"2026-06-15",companyCam:"",notes:"Plumbing rough-in complete. Electrical in progress.",subPhases:[{name:"SOW Approval",due:"2026-03-05"},{name:"Budget Approval",due:"2026-03-10"}]},
+  {id:2,addr:"834 Meadowview Ln",phase:"Pre Construction",type:"Full Rehab No Permit",pm:"Isaiah",position:"",budget:"$72,000",spent:"$4,500",start:"2026-04-10",end:"2026-07-20",companyCam:"",notes:"",subPhases:[{name:"SOW Creation",due:"2026-04-12"}]},
+  {id:3,addr:"2209 Crestline Ave",phase:"Finishes",type:"Quick Cosmetic",pm:"Andrew",position:"",budget:"$48,000",spent:"$41,000",start:"2025-12-01",end:"2026-05-30",companyCam:"",notes:"",subPhases:[]},
+  {id:4,addr:"107 Sunrise Ridge Ct",phase:"Waiting Permits",type:"Full Rehab Permit",pm:"Bruce",position:"",budget:"$88,000",spent:"$2,000",start:"2026-05-01",end:"2026-09-01",companyCam:"",notes:"",subPhases:[{name:"Drawing / Structural Phase",due:"2026-04-20"},{name:"Pending Permit Approval",due:"2026-05-01"}]},
+  {id:5,addr:"3315 Oakhill Blvd",phase:"Pre List / Punchout Process",type:"Full Cosmetic",pm:"Isaiah",position:"",budget:"$55,000",spent:"$52,000",start:"2025-10-15",end:"2026-05-10",companyCam:"",notes:"",subPhases:[]},
+  {id:6,addr:"612 Springwater Rd",phase:"Upcoming Takedowns",type:"Rental Turn / Flip",pm:"Bruce",position:"",budget:"$40,000",spent:"$0",start:"",end:"",companyCam:"",notes:"",subPhases:[]},
+  {id:7,addr:"445 Elmwood Ct",phase:"In Contract",type:"Whole Tail / Flip",pm:"Bruce",position:"",budget:"$62,000",spent:"$58,000",start:"2025-11-01",end:"2026-05-15",companyCam:"",notes:"",subPhases:[]},
+  {id:8,addr:"1902 Cedar Hill Rd",phase:"RTR In Process",type:"Full Rehab No Permit",pm:"Andrew",position:"",budget:"$71,000",spent:"$68,000",start:"2025-09-15",end:"2026-04-30",companyCam:"",notes:"",subPhases:[]},
+  {id:9,addr:"78 Valley View Dr",phase:"Closed",type:"Full Rehab Permit",pm:"Isaiah",position:"",budget:"$53,000",spent:"$51,200",start:"2025-07-01",end:"2026-03-15",companyCam:"",notes:"Closed Mar 15.",subPhases:[]},
+];
+let propEditingId = null;
+
+function phInfo(name){ return PROP_PHASES.find(p=>p.name===name)||{bg:"#f4f5f7",text:"#555",cnt:"#aaa",dot:"#aaa"}; }
+
+// ===================== MAIN DASHBOARD 5 BOARDS =====================
+function renderMainDashboard() {
+  const statCard = (label, val, sub, color) => `
+    <div style="background:#fff;border:0.5px solid #e0e4ec;border-radius:8px;padding:12px 14px">
+      <div style="font-size:10px;color:#999;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">${label}</div>
+      <div style="font-size:20px;font-weight:500;color:${color||'#111'}">${val}</div>
+      <div style="font-size:11px;color:#aaa;margin-top:2px">${sub}</div>
+    </div>`;
+
+  // Collect sub phases across all properties
+  const boards = {
+    "SOW & Budgets":               [],
+    "Permits & Drawings":          [],
+    "Design Budgets & Design Status": [],
+    "Takedowns / Vacancies":       [],
+    "Pre Listing Phase":           [],
+    "Remedy Requests / Upcoming Closings": [],
+  };
+
+  // Business day check — only include sub phases due within 5 business days
+  function addBusinessDays(date, days) {
+    let d = new Date(date); let added = 0;
+    while (added < days) { d.setDate(d.getDate()+1); if (d.getDay()!==0&&d.getDay()!==6) added++; }
+    return d;
+  }
+  const today = new Date(); today.setHours(0,0,0,0);
+  const cutoff = addBusinessDays(today, 5);
+
+  function isDueWithin5Biz(dueDateStr) {
+    if (!dueDateStr) return false;
+    const d = new Date(dueDateStr); d.setHours(0,0,0,0);
+    return d >= today && d <= cutoff;
+  }
+  function isOverdue(dueDateStr) {
+    if (!dueDateStr) return false;
+    const d = new Date(dueDateStr); d.setHours(0,0,0,0);
+    return d < today;
+  }
+
+  propCards.forEach(card => {
+    if (card.phase === "Upcoming Takedowns" || card.phase === "Vacant / On Standby") {
+      boards["Takedowns / Vacancies"].push({addr: card.addr, pm: card.pm, phase: card.phase, sub: "", due: card.end || "", overdue: false});
+    }
+    if (card.phase === "Pre List / Punchout Process") {
+      boards["Pre Listing Phase"].push({addr: card.addr, pm: card.pm, phase: card.phase, sub: "Punchout / Pre-Listing", due: card.end || "", overdue: false});
+    }
+    if (card.phase === "In Contract" || card.phase === "RTR In Process" || card.phase === "RTR Completed (Pending Closing)") {
+      boards["Remedy Requests / Upcoming Closings"].push({addr: card.addr, pm: card.pm, sub: card.phase, due: card.end || "", overdue: isOverdue(card.end)});
+    }
+    // Only sub phases due within 5 business days (or overdue)
+    (card.subPhases || []).forEach(sp => {
+      const boardName = SUB_PHASE_BOARD[sp.name];
+      if (boardName && boards[boardName]) {
+        if (isDueWithin5Biz(sp.due) || isOverdue(sp.due)) {
+          boards[boardName].push({addr: card.addr, pm: card.pm, sub: sp.name, due: sp.due || "", overdue: isOverdue(sp.due)});
+        }
+      }
+    });
+  });
+
+  // Sort: overdue first, then by soonest due date
+  function sortBoard(items) {
+    return [...items].sort((a, b) => {
+      const aOver = a.overdue ? -1 : 0;
+      const bOver = b.overdue ? -1 : 0;
+      if (aOver !== bOver) return aOver - bOver;
+      if (!a.due && !b.due) return 0;
+      if (!a.due) return 1;
+      if (!b.due) return -1;
+      return new Date(a.due) - new Date(b.due);
+    });
+  }
+
+  const boardCard = (title, color, dotColor, items) => `
+    <div style="background:#fff;border:0.5px solid #e0e4ec;border-radius:10px;overflow:hidden;border-top:3px solid ${dotColor}">
+      <div style="padding:10px 14px;border-bottom:0.5px solid #eef0f6;display:flex;align-items:center;justify-content:space-between">
+        <div style="font-size:12px;font-weight:500;color:#111">${title}</div>
+        <span style="font-size:11px;background:${color};color:${dotColor};padding:2px 8px;border-radius:99px;font-weight:500">${items.length}</span>
+      </div>
+      <div style="padding:10px 14px;min-height:140px">
+        ${items.length === 0
+          ? `<div style="text-align:center;color:#ccc;font-size:12px;padding:20px 0">No items due within 5 business days</div>`
+          : items.slice(0,6).map(it => `
+            <div style="padding:6px 0;border-bottom:0.5px solid #f4f5f7">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:6px">
+                <div style="flex:1;min-width:0">
+                  <div style="font-size:12px;color:#111;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${it.addr}</div>
+                  <div style="font-size:10px;color:#888;margin-top:1px">${it.sub||it.phase||''}</div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px">
+                ${it.pm ? `<div style="font-size:10px;padding:1px 6px;border-radius:99px;background:#f4f5f7;color:#555">${it.pm}</div>` : '<div></div>'}
+                ${it.due ? `<div style="font-size:10px;font-weight:600;color:${it.overdue?'#c0392b':'#E24B4A'}">${it.overdue?'⚠ Overdue: ':'Due: '}${it.due}</div>` : ''}
+              </div>
+            </div>`).join('')}
+        ${items.length > 6 ? `<div style="font-size:11px;color:#aaa;padding:6px 0">+${items.length-6} more</div>` : ''}
+      </div>
+    </div>`;
+
+  return `
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px">
+      ${statCard('Active Projects', countActive(), 'Framing → Pre-listing', '#111')}
+      ${statCard('On the Market', countOnMarket(), 'Listed properties', '#5dade2')}
+      ${statCard('Waiting Permits', countWaitingPermit(), 'Pending approval', '#f39c12')}
+      ${statCard('Closed This Year', countClosedThisYear(), 'This calendar year', '#2ecc71')}
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:0">
+      ${boardCard("SOW & Budgets",                "#E6F1FB","#185FA5", sortBoard(boards["SOW & Budgets"]))}
+      ${boardCard("Permits & Drawings",           "#FBEAF0","#D4537E", sortBoard(boards["Permits & Drawings"]))}
+      ${boardCard("Design Budgets & Status",      "#EEEDFE","#7F77DD", sortBoard(boards["Design Budgets & Design Status"]))}
+      ${boardCard("Takedowns / Vacancies",        "#FCEBEB","#E24B4A", sortBoard(boards["Takedowns / Vacancies"]))}
+      ${boardCard("Pre Listing Phase",            "#FAECE7","#D85A30", sortBoard(boards["Pre Listing Phase"]))}
+      ${boardCard("Remedy Requests / Upcoming Closings","#EAF3DE","#3B6D11", sortBoard(boards["Remedy Requests / Upcoming Closings"]))}
+    </div>`;
+}
+
+// ===================== PROPERTY DASHBOARD BOARD =====================
+function renderPropertyBoard() {
+  const sidebar = [...propCards].sort((a,b)=>a.addr.localeCompare(b.addr)).map((c,i) => {
+    const p = phInfo(c.phase);
+    return `<div onclick="openPropDetail(${c.id})" style="padding:8px 10px;cursor:pointer;border-bottom:0.5px solid #f4f5f7;display:flex;align-items:center;gap:7px">
+      <span style="font-size:10px;color:#aaa;min-width:16px;font-weight:500">${String(i+1).padStart(2,'0')}</span>
+      <div style="width:10px;height:10px;border-radius:50%;background:${p.dot};box-shadow:0 0 0 2px ${p.dot}44;flex-shrink:0"></div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:11.5px;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.addr}</div>
+        <div style="font-size:10px;color:#aaa">${c.pm||'—'} · ${c.type||'—'}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const board = PROP_PHASES.map(ph => {
+    const pc = propCards.filter(c => c.phase === ph.name);
+    return `<div style="width:155px;flex-shrink:0">
+      <div style="padding:7px 10px;border-radius:6px 6px 0 0;margin-bottom:6px;background:${ph.bg};display:flex;align-items:center;justify-content:space-between">
+        <span style="font-size:10.5px;font-weight:500;color:${ph.text};line-height:1.3">${ph.name}</span>
+        <span style="font-size:10px;padding:1px 5px;border-radius:99px;background:${ph.cnt};color:${ph.text};flex-shrink:0;margin-left:3px">${pc.length}</span>
+      </div>
+      <div ondragover="event.preventDefault();this.style.background='#f0f7ff'" ondragleave="this.style.background='transparent'" ondrop="this.style.background='transparent';propDrop(event,this.dataset.phase)" data-phase="${ph.name}" style="display:flex;flex-direction:column;gap:5px;min-height:60px;border-radius:6px;transition:background 0.15s">
+        ${pc.map(c => {
+          const typeStyle = PROP_TYPE_STYLE[c.type] || "background:#f4f5f7;color:#555";
+          const pmColor = PROP_PM_COLORS[c.pm] || "#ccc";
+          const bNum = parseFloat((c.budget||'0').replace(/[^0-9.]/g,''))||0;
+          const sNum = parseFloat((c.spent||'0').replace(/[^0-9.]/g,''))||0;
+          const pct  = bNum>0 ? Math.round((sNum/bNum)*100) : 0;
+          const progC = pct>90?'#E24B4A':pct>70?'#EF9F27':'#639922';
+          const activeSubPhases = (c.subPhases||[]).slice(0,2).map(sp=>
+            `<div style="font-size:10px;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">· ${sp.name}${sp.due?' ('+sp.due+')':''}</div>`
+          ).join('');
+          return `<div style="background:#fff;border:0.5px solid #e0e4ec;border-left:3px solid ${ph.dot};border-radius:6px;overflow:hidden">
+            <div draggable="true" ondragstart="propDragStart(event,${c.id})" style="background:#f9f9f9;border-bottom:0.5px solid #f0f0f0;padding:5px 10px;cursor:grab;display:flex;align-items:center;gap:6px;user-select:none" title="Drag to move phase">
+              <span style="font-size:14px;color:#ccc;letter-spacing:-2px;line-height:1">⠿</span>
+              <span style="font-size:10px;color:#bbb;text-transform:uppercase;letter-spacing:0.05em">Drag to move</span>
+            </div>
+            <div onclick="openPropDetail(${c.id})" style="padding:8px 10px;cursor:pointer">
+            <div style="font-size:11.5px;font-weight:500;color:#111;margin-bottom:4px;line-height:1.3">${c.addr}</div>
+            <div style="margin-bottom:5px">
+              ${activeSubPhases || '<div style="font-size:10px;color:#ccc">No sub phases set</div>'}
+            </div>
+            <div style="background:#f4f5f7;border-radius:3px;height:4px;margin-bottom:5px;overflow:hidden">
+              <div style="height:100%;width:${Math.min(pct,100)}%;background:${progC};border-radius:3px"></div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div style="font-size:10px;color:#185FA5;font-weight:500">${c.position||'—'}<span style="font-size:9px;color:#aaa;font-weight:400;margin-left:3px">position</span></div>
+              ${c.end ? `<div style="font-size:10px;color:#aaa">${c.end}</div>` : ''}
+            </div>
+            <div style="margin-top:5px;display:flex;align-items:center;gap:3px">
+              <div style="width:12px;height:12px;border-radius:50%;background:${pmColor};color:#fff;font-size:7px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0">${c.pm?c.pm[0]:''}</div>
+              <span style="font-size:10px;color:#aaa">${c.pm||'—'}</span>
+            </div>
+            </div>
+          </div>`;
+        }).join('')}
+        <button onclick="openPropModal(null,'${ph.name.replace(/'/g,"\\'")}')" style="width:100%;padding:5px;font-size:11px;color:#aaa;background:transparent;border:0.5px dashed #e0e4ec;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:3px;margin-top:3px">
+          + Add
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+
+  return `
+    <div style="display:flex;height:580px;overflow:hidden;background:#f4f5f7;border-radius:8px">
+      <!-- Sidebar collapsed tab -->
+      <div id="prop-sb-collapsed" onclick="openPropSidebar()" style="width:30px;background:#fff;border-right:0.5px solid #e0e4ec;display:flex;flex-direction:column;align-items:center;padding-top:10px;cursor:pointer;flex-shrink:0" title="Show all properties">
+        <span style="font-size:14px;color:#aaa">›</span>
+        <div style="writing-mode:vertical-rl;font-size:9px;color:#aaa;text-transform:uppercase;letter-spacing:0.08em;margin-top:8px">All Properties</div>
+      </div>
+      <!-- Sidebar open -->
+      <div id="prop-sb-open" style="width:0;overflow:hidden;background:#fff;border-right:0.5px solid #e0e4ec;display:flex;flex-direction:column;flex-shrink:0;transition:width 0.2s">
+        <div style="padding:9px 12px;border-bottom:0.5px solid #e0e4ec;display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+          <span style="font-size:11px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:0.05em">All Properties</span>
+          <button onclick="closePropSidebar()" style="background:none;border:none;cursor:pointer;color:#aaa;font-size:13px;padding:2px 5px;border-radius:4px">✕</button>
+        </div>
+        <div id="prop-sb-list" style="overflow-y:auto;flex:1">${sidebar}</div>
+      </div>
+      <!-- Board scroll -->
+      <div style="flex:1;overflow:auto;padding:12px">
+        <div style="display:flex;gap:10px;align-items:flex-start;min-width:max-content">${board}</div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-top:10px">
+      <button onclick="openPropModal()" style="display:flex;align-items:center;gap:5px;padding:6px 14px;font-size:12px;border-radius:6px;cursor:pointer;border:0.5px solid #ccc;background:#111;color:#fff">+ Add Property</button>
+    </div>`;
+}
+
+function openPropSidebar(){
+  document.getElementById("prop-sb-collapsed").style.display="none";
+  document.getElementById("prop-sb-open").style.width="210px";
+}
+function closePropSidebar(){
+  document.getElementById("prop-sb-open").style.width="0";
+  setTimeout(()=>{ document.getElementById("prop-sb-collapsed").style.display="flex"; },200);
+}
+
+// ===================== PROPERTY DETAIL PAGE =====================
+function openPropDetail(id) {
+  const c = propCards.find(x => x.id === id);
+  if (!c) return;
+  const p = phInfo(c.phase);
+  const bNum = parseFloat((c.budget||'0').replace(/[^0-9.]/g,''))||0;
+  const sNum = parseFloat((c.spent||'0').replace(/[^0-9.]/g,''))||0;
+  const pct  = bNum > 0 ? Math.round((sNum/bNum)*100) : 0;
+  const progColor = pct>90?'#E24B4A':pct>70?'#EF9F27':'#639922';
+  const typeStyle = PROP_TYPE_STYLE[c.type] || "background:#f4f5f7;color:#555";
+  const pmColor = PROP_PM_COLORS[c.pm] || "#ccc";
+
+  const subPhaseRows = (c.subPhases||[]).map(sp => {
+    const board = SUB_PHASE_BOARD[sp.name] || '—';
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:0.5px solid #f4f5f7;font-size:12px">
+      <div>
+        <div style="color:#111;font-weight:500">${sp.name}</div>
+        <div style="font-size:10px;color:#aaa;margin-top:1px">Feeds → ${board}</div>
+      </div>
+      <div style="text-align:right">
+        ${sp.due ? `<div style="font-size:11px;color:#888">${sp.due}</div>` : '<div style="font-size:11px;color:#ccc">No due date</div>'}
+      </div>
+    </div>`;
+  }).join('') || '<div style="font-size:12px;color:#ccc;padding:8px 0">No sub phases set</div>';
+
+  document.getElementById("pd-content").innerHTML = `
+    <div style="background:#fff;min-height:520px;border-radius:8px;overflow:hidden;margin-top:0">
+      <div style="padding:10px 18px;border-bottom:0.5px solid #e0e4ec;display:flex;align-items:center;gap:8px;background:#fafafa">
+        <button onclick="openProjectDashboard('trello')" style="display:flex;align-items:center;gap:5px;font-size:12px;color:#888;cursor:pointer;padding:4px 8px;border-radius:5px;background:none;border:none">← Back to Property Dashboard</button>
+      </div>
+      <div style="padding:16px 20px;border-bottom:0.5px solid #e0e4ec">
+        <div style="font-size:17px;font-weight:500;color:#111;margin-bottom:8px">${c.addr}</div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <span style="font-size:11px;padding:3px 10px;border-radius:99px;background:${p.bg};color:${p.text};font-weight:500">${c.phase}</span>
+          ${c.type ? `<span style="font-size:11px;padding:3px 10px;border-radius:99px;font-weight:500;${typeStyle}">${c.type}</span>` : ''}
+          ${c.pm ? `<span style="font-size:12px;color:#888;display:flex;align-items:center;gap:4px"><div style="width:16px;height:16px;border-radius:50%;background:${pmColor};color:#fff;font-size:9px;font-weight:500;display:flex;align-items:center;justify-content:center">${c.pm[0]}</div>${c.pm}</span>` : ''}
+        </div>
+      </div>
+      <div style="padding:16px 20px">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
+          <div style="background:#f4f5f7;border-radius:8px;padding:12px 14px">
+            <div style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">Budget</div>
+            <div style="font-size:17px;font-weight:500;color:#111">${c.budget||'—'}</div>
+            <div style="font-size:11px;color:#aaa;margin-top:2px">Total projected spend</div>
+          </div>
+          <div style="background:#f4f5f7;border-radius:8px;padding:12px 14px">
+            <div style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">Spent to Date</div>
+            <div style="font-size:17px;font-weight:500;color:${progColor}">${c.spent||'—'}</div>
+            <div style="font-size:11px;color:#aaa;margin-top:2px">${pct}% of budget used</div>
+          </div>
+          <div style="background:#f4f5f7;border-radius:8px;padding:12px 14px;border:1.5px solid #e6f1fb">
+            <div style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;display:flex;align-items:center;gap:5px">
+              Total Money Position
+              <span style="font-size:9px;background:#E6F1FB;color:#185FA5;padding:1px 5px;border-radius:4px">Google Sheet</span>
+            </div>
+            <div style="font-size:17px;font-weight:500;color:#185FA5">${c.position||'—'}</div>
+            <div style="font-size:11px;color:#aaa;margin-top:2px">Links to live tracker</div>
+          </div>
+        </div>
+        <div style="background:#f4f5f7;border-radius:6px;height:6px;margin-bottom:16px;overflow:hidden">
+          <div style="height:100%;width:${Math.min(pct,100)}%;background:${progColor};border-radius:6px"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div style="background:#fff;border:0.5px solid #e0e4ec;border-radius:8px;overflow:hidden">
+            <div style="padding:9px 14px;border-bottom:0.5px solid #e0e4ec;font-size:12px;font-weight:500;color:#111">Property Info</div>
+            <div style="padding:10px 14px">
+              <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:0.5px solid #f4f5f7;font-size:13px"><span style="color:#888">Project Manager</span><span style="color:#111;font-weight:500">${c.pm||'—'}</span></div>
+              <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:0.5px solid #f4f5f7;font-size:13px"><span style="color:#888">Property Type</span><span style="color:#111;font-weight:500">${c.type||'—'}</span></div>
+              <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:0.5px solid #f4f5f7;font-size:13px"><span style="color:#888">Main Phase</span><span style="color:#111;font-weight:500">${c.phase||'—'}</span></div>
+              <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:0.5px solid #f4f5f7;font-size:13px"><span style="color:#888">Start Date</span><span style="color:#111;font-weight:500">${c.start||'—'}</span></div>
+              <div style="display:flex;justify-content:space-between;padding:7px 0;font-size:13px"><span style="color:#888">Target Completion</span><span style="color:#111;font-weight:500">${c.end||'—'}</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-size:13px">
+                <span style="color:#888;display:flex;align-items:center;gap:5px">📷 CompanyCam <span style="font-size:9px;background:#E6F1FB;color:#185FA5;padding:1px 5px;border-radius:4px">Auto-links when folder created</span></span>
+                ${c.companyCam ? `<a href="${c.companyCam}" target="_blank" style="font-size:12px;color:#185FA5;text-decoration:none">Open Folder ↗</a>` : `<button onclick="openPropModal('companycam',${c.id})" style="font-size:11px;padding:2px 8px;border-radius:4px;background:transparent;color:#aaa;border:0.5px solid #ccc;cursor:pointer">+ Add Link</button>`}
+              </div>
+            </div>
+          </div>
+          <div style="background:#fff;border:0.5px solid #e0e4ec;border-radius:8px;overflow:hidden">
+            <div style="padding:9px 14px;border-bottom:0.5px solid #e0e4ec;font-size:12px;font-weight:500;color:#111;display:flex;align-items:center;justify-content:space-between">
+              Sub Phases
+              <button onclick="openPropModal('subphase',${c.id})" style="font-size:11px;padding:2px 8px;border-radius:4px;background:#111;color:#fff;border:none;cursor:pointer">+ Add</button>
+            </div>
+            <div style="padding:10px 14px">${subPhaseRows}</div>
+          </div>
+        </div>
+        <div style="background:#fff;border:0.5px solid #e0e4ec;border-radius:8px;overflow:hidden;margin-top:12px">
+          <div style="padding:9px 14px;border-bottom:0.5px solid #e0e4ec;font-size:12px;font-weight:500;color:#111">Notes</div>
+          <div style="padding:10px 14px;font-size:13px;color:#888;line-height:1.6">${c.notes||'No notes added yet.'}</div>
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+          <button onclick="openPropModal('edit',${c.id})" style="display:flex;align-items:center;gap:5px;padding:7px 14px;font-size:12px;border-radius:6px;cursor:pointer;background:#111;color:#fff;border:none">✎ Edit Property</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ===================== PROPERTY MODAL =====================
+function openPropModal(mode, id) {
+  const c = id ? propCards.find(x => x.id === id) : null;
+  propEditingId = id || null;
+
+  if (mode === 'companycam') {
+    document.getElementById("prop-modal-title").textContent = "Add CompanyCam Link — " + (c ? c.addr : '');
+    document.getElementById("prop-modal-body").innerHTML = `
+      <div style="margin-bottom:12px">
+        <label style="display:block;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">CompanyCam Folder URL</label>
+        <input id="pm-companycam" type="url" placeholder="https://app.companycam.com/projects/..." value="${c?c.companyCam||'':''}" style="width:100%;padding:7px 10px;border:0.5px solid #ccc;border-radius:6px;font-size:13px;color:#111;background:#fff;outline:none" />
+      </div>
+      <div style="font-size:11px;color:#aaa">Once your boss builds the auto-linking system, this will populate automatically when a CompanyCam folder is created for this property.</div>`;
+    document.getElementById("prop-modal-save").onclick = () => {
+      const url = document.getElementById("pm-companycam").value.trim();
+      const idx = propCards.findIndex(x => x.id === id);
+      if (idx >= 0) propCards[idx].companyCam = url;
+      closePropModal();
+      openPropDetail(id);
+    };
+    document.getElementById("prop-modal").style.display = "block";
+    return;
+  }
+
+  if (mode === 'subphase') {
+    // Sub phase add modal
+    document.getElementById("prop-modal-title").textContent = "Add Sub Phase — " + (c ? c.addr : '');
+    document.getElementById("prop-modal-body").innerHTML = `
+      <div style="margin-bottom:12px">
+        <label style="display:block;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">Sub Phase</label>
+        <select id="pm-sub-select" style="width:100%;padding:7px 10px;border:0.5px solid #ccc;border-radius:6px;font-size:13px;color:#111;background:#fff;outline:none">
+          <option value="">— Select sub phase —</option>
+          ${SUB_PHASES.map(s => `<option>${s}</option>`).join('')}
+        </select>
+      </div>
+      <div style="margin-bottom:12px">
+        <label style="display:block;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">Due Date</label>
+        <input id="pm-sub-due" type="date" style="width:100%;padding:7px 10px;border:0.5px solid #ccc;border-radius:6px;font-size:13px;color:#111;background:#fff;outline:none" />
+      </div>
+      <div style="font-size:11px;color:#aaa;margin-top:4px">This sub phase will auto-populate on the Main Dashboard board it belongs to.</div>`;
+    document.getElementById("prop-modal-save").onclick = () => {
+      const sub = document.getElementById("pm-sub-select").value;
+      const due = document.getElementById("pm-sub-due").value;
+      if (!sub) { alert("Please select a sub phase."); return; }
+      const idx = propCards.findIndex(x => x.id === id);
+      if (idx >= 0) {
+        propCards[idx].subPhases = propCards[idx].subPhases || [];
+        propCards[idx].subPhases.push({name: sub, due: due});
+      }
+      closePropModal();
+      openPropDetail(id);
+    };
+    document.getElementById("prop-modal").style.display = "block";
+    return;
+  }
+
+  // Add/Edit property modal
+  document.getElementById("prop-modal-title").textContent = c ? "Edit Property" : "Add New Property";
+  document.getElementById("prop-modal-body").innerHTML = `
+    <div style="margin-bottom:12px">
+      <label style="display:block;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">Property Address</label>
+      <input id="pm-addr" type="text" value="${c?c.addr:''}" placeholder="123 Main St, Columbus OH" style="width:100%;padding:7px 10px;border:0.5px solid #ccc;border-radius:6px;font-size:13px;color:#111;background:#fff;outline:none" />
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      <div>
+        <label style="display:block;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">Main Phase</label>
+        <select id="pm-phase" style="width:100%;padding:7px 10px;border:0.5px solid #ccc;border-radius:6px;font-size:13px;color:#111;background:#fff;outline:none">
+          <option value="">— Select —</option>
+          ${PROP_PHASES.map(p=>`<option ${c&&c.phase===p.name?'selected':''}>${p.name}</option>`).join('')}
+        </select>
+      </div>
+      <div>
+        <label style="display:block;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">Project Manager</label>
+        <select id="pm-pm" style="width:100%;padding:7px 10px;border:0.5px solid #ccc;border-radius:6px;font-size:13px;color:#111;background:#fff;outline:none">
+          <option value="">— Assign PM —</option>
+          ${PROP_PM_OPTIONS.map(pm=>`<option ${c&&c.pm===pm?'selected':''}>${pm}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <div style="margin-bottom:12px">
+      <label style="display:block;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">Property Type</label>
+      <select id="pm-type" style="width:100%;padding:7px 10px;border:0.5px solid #ccc;border-radius:6px;font-size:13px;color:#111;background:#fff;outline:none">
+        <option value="">— Select Type —</option>
+        ${PROP_TYPES.map(t=>`<option ${c&&c.type===t?'selected':''}>${t}</option>`).join('')}
+      </select>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      <div>
+        <label style="display:block;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">Budget</label>
+        <input id="pm-budget" type="text" value="${c?c.budget:''}" placeholder="$00,000" style="width:100%;padding:7px 10px;border:0.5px solid #ccc;border-radius:6px;font-size:13px;color:#111;background:#fff;outline:none" />
+      </div>
+      <div>
+        <label style="display:block;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">Spent to Date</label>
+        <input id="pm-spent" type="text" value="${c?c.spent:''}" placeholder="$00,000" style="width:100%;padding:7px 10px;border:0.5px solid #ccc;border-radius:6px;font-size:13px;color:#111;background:#fff;outline:none" />
+      </div>
+    </div>
+    <div style="margin-bottom:12px">
+      <label style="display:block;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">Total Money Position <span style="font-size:9px;background:#E6F1FB;color:#185FA5;padding:1px 5px;border-radius:4px;margin-left:4px">Google Sheet</span></label>
+      <input id="pm-position" type="text" value="${c?c.position:''}" placeholder="Will link to Google Sheet tracker" style="width:100%;padding:7px 10px;border:0.5px solid #ccc;border-radius:6px;font-size:13px;color:#111;background:#fff;outline:none" />
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      <div>
+        <label style="display:block;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">Start Date</label>
+        <input id="pm-start" type="date" value="${c?c.start:''}" style="width:100%;padding:7px 10px;border:0.5px solid #ccc;border-radius:6px;font-size:13px;color:#111;background:#fff;outline:none" />
+      </div>
+      <div>
+        <label style="display:block;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">Target Completion</label>
+        <input id="pm-end" type="date" value="${c?c.end:''}" style="width:100%;padding:7px 10px;border:0.5px solid #ccc;border-radius:6px;font-size:13px;color:#111;background:#fff;outline:none" />
+      </div>
+    </div>
+    <div>
+      <label style="display:block;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">Notes</label>
+      <textarea id="pm-notes" placeholder="Additional notes..." style="width:100%;padding:7px 10px;border:0.5px solid #ccc;border-radius:6px;font-size:13px;color:#111;background:#fff;outline:none;min-height:55px;resize:vertical">${c?c.notes:''}</textarea>
+    </div>`;
+
+  document.getElementById("prop-modal-save").onclick = () => {
+    const data = {
+      addr:     document.getElementById("pm-addr").value.trim(),
+      phase:    document.getElementById("pm-phase").value,
+      pm:       document.getElementById("pm-pm").value,
+      type:     document.getElementById("pm-type").value,
+      budget:   document.getElementById("pm-budget").value,
+      spent:    document.getElementById("pm-spent").value,
+      position: document.getElementById("pm-position").value,
+      start:    document.getElementById("pm-start").value,
+      end:      document.getElementById("pm-end").value,
+      notes:    document.getElementById("pm-notes").value,
+      companyCam: c ? c.companyCam || '' : '',
+    };
+    if (!data.addr || !data.phase) { alert("Address and Main Phase are required."); return; }
+    // CompanyCam auto-folder creation — will trigger automatically once backend is connected
+    // For now, the field is left blank and can be manually linked or auto-populated by the integration
+    if (!propEditingId) {
+      data.companyCam = ""; // Will auto-populate when CompanyCam integration is live
+    }
+    if (propEditingId) {
+      const idx = propCards.findIndex(x => x.id === propEditingId);
+      if (idx >= 0) propCards[idx] = { ...propCards[idx], ...data };
+    } else {
+      propCards.push({ id: Date.now(), subPhases: [], ...data });
+    }
+    closePropModal();
+    openProjectDashboard('trello');
+  };
+  document.getElementById("prop-modal").style.display = "block";
+}
+
+function closePropModal() {
+  document.getElementById("prop-modal").style.display = "none";
+  propEditingId = null;
+}
+
+// ===================== GET PD CONTENT =====================
+function getPDContent(tab) {
+  const placeholder = (icon, msg) => `
+    <div style="background:#fff;border:0.5px solid #e0e4ec;border-radius:8px;padding:32px;text-align:center;color:#bbb;font-size:13px;margin:20px 0">
+      <div style="font-size:28px;margin-bottom:8px;opacity:0.35">${icon}</div>${msg}
+    </div>`;
+
+  switch(tab) {
+    case 'main':   return renderMainDashboard();
+    case 'andrew': return pmTabContent('Andrew');
+    case 'isaiah': return pmTabContent('Isaiah');
+    case 'sow':    return placeholder('💰','SOW / Budgets — This section will link to the platform your boss is building.');
+    case 'trello': return renderPropertyBoard();
+    case 'tasks':  return placeholder('📅','Tasks / Scheduling — Internal calendar being built out.');
+    default:       return placeholder('📊','Select a tab above to get started.');
+  }
+}
+
+function pmTabContent(name) {
+  const liveName = resolvePMName(name);
+  const pmColor = PROP_PM_COLORS[name] || '#ccc';
+
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  function addBizDays(date, days) {
+    let d = new Date(date); let added = 0;
+    while (added < days) { d.setDate(d.getDate()+1); if(d.getDay()!==0&&d.getDay()!==6) added++; }
+    return d;
+  }
+  const cutoff5 = addBizDays(today, 5);
+  const cutoff14 = new Date(today); cutoff14.setDate(today.getDate()+14);
+
+  function isOver(ds) { if(!ds) return false; const d=new Date(ds);d.setHours(0,0,0,0);return d<today; }
+  function within5(ds) { if(!ds) return false; const d=new Date(ds);d.setHours(0,0,0,0);return d>=today&&d<=cutoff5; }
+  function within14(ds) { if(!ds) return false; const d=new Date(ds);d.setHours(0,0,0,0);return d>=today&&d<=cutoff14; }
+
+  // Build boards from THIS PM's properties only
+  const myProps = propCards.filter(c => c.pm === name);
+
+  const boards = {
+    "SOW & Budgets":               [],
+    "Permits & Drawings":          [],
+    "Design Budgets & Design Status": [],
+    "Takedowns / Vacancies":       [],
+    "Pre Listing Phase":           [],
+    "Remedy Requests / Upcoming Closings": [],
+  };
+
+  myProps.forEach(card => {
+    if (card.phase==="Upcoming Takedowns"||card.phase==="Vacant / On Standby")
+      boards["Takedowns / Vacancies"].push({addr:card.addr,pm:card.pm,phase:card.phase,sub:"",due:card.end||"",overdue:isOver(card.end)});
+    if (card.phase==="Pre List / Punchout Process")
+      boards["Pre Listing Phase"].push({addr:card.addr,pm:card.pm,phase:card.phase,sub:"Punchout / Pre-Listing",due:card.end||"",overdue:isOver(card.end)});
+    if (card.phase==="In Contract"||card.phase==="RTR In Process"||card.phase==="RTR Completed (Pending Closing)")
+      boards["Remedy Requests / Upcoming Closings"].push({addr:card.addr,pm:card.pm,sub:card.phase,due:card.end||"",overdue:isOver(card.end)});
+    (card.subPhases||[]).forEach(sp => {
+      const bn = SUB_PHASE_BOARD[sp.name];
+      if (bn && boards[bn] && (within5(sp.due)||isOver(sp.due)))
+        boards[bn].push({addr:card.addr,pm:card.pm,sub:sp.name,due:sp.due||"",overdue:isOver(sp.due)});
+    });
+  });
+
+  // Sort each board: overdue → soonest due
+  function sortB(items) {
+    return [...items].sort((a,b)=>{
+      if(a.overdue&&!b.overdue) return -1;
+      if(!a.overdue&&b.overdue) return 1;
+      if(!a.due&&!b.due) return 0;
+      if(!a.due) return 1; if(!b.due) return -1;
+      return new Date(a.due)-new Date(b.due);
+    });
+  }
+
+  // Count upcoming tasks within 14 days across all sub phases
+  let upcoming14Count = 0;
+  myProps.forEach(card => {
+    (card.subPhases||[]).forEach(sp => { if(within14(sp.due)) upcoming14Count++; });
+    if(within14(card.end)) upcoming14Count++;
+  });
+
+  // Top 10 closest due tasks across all boards for this PM
+  let allTasks = [];
+  myProps.forEach(card => {
+    (card.subPhases||[]).forEach(sp => {
+      if(sp.due) allTasks.push({addr:card.addr, task:sp.name, due:sp.due, overdue:isOver(sp.due)});
+    });
+    if(card.end) allTasks.push({addr:card.addr, task:'Completion', due:card.end, overdue:isOver(card.end)});
+  });
+  allTasks.sort((a,b)=>new Date(a.due)-new Date(b.due));
+  const top10 = allTasks.slice(0,10);
+
+  const boardCardPM = (title, color, dotColor, items) => {
+    const sorted = sortB(items);
+    return `<div style="background:#fff;border:0.5px solid #e0e4ec;border-radius:10px;overflow:hidden;border-top:3px solid ${dotColor}">
+      <div style="padding:9px 13px;border-bottom:0.5px solid #eef0f6;display:flex;align-items:center;justify-content:space-between">
+        <div style="font-size:11.5px;font-weight:500;color:#111">${title}</div>
+        <span style="font-size:10px;background:${color};color:${dotColor};padding:2px 7px;border-radius:99px;font-weight:500">${sorted.length}</span>
+      </div>
+      <div style="padding:10px 13px;min-height:120px">
+        ${sorted.length===0
+          ? `<div style="text-align:center;color:#ccc;font-size:11px;padding:16px 0">No items due within 5 days</div>`
+          : sorted.slice(0,5).map(it=>`
+            <div style="padding:5px 0;border-bottom:0.5px solid #f4f5f7">
+              <div style="font-size:11px;color:#111;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${it.addr}</div>
+              <div style="font-size:10px;color:#888">${it.sub||it.phase||''}</div>
+              <div style="font-size:10px;font-weight:600;color:${it.overdue?'#c0392b':'#E24B4A'};margin-top:2px">${it.overdue?'⚠ Overdue: ':'Due: '}${it.due}</div>
+            </div>`).join('')}
+        ${sorted.length>5?`<div style="font-size:10px;color:#aaa;padding:4px 0">+${sorted.length-5} more</div>`:''}
+      </div>
+    </div>`;
+  };
+
+  const taskRows = top10.length === 0
+    ? `<div style="text-align:center;color:#ccc;font-size:12px;padding:16px 0">No upcoming tasks — will connect to task manager</div>`
+    : top10.map(t=>`
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid #f4f5f7">
+        <div>
+          <div style="font-size:12px;color:#111;font-weight:500">${t.task}</div>
+          <div style="font-size:11px;color:#888">${t.addr}</div>
+        </div>
+        <div style="font-size:11px;font-weight:600;color:${t.overdue?'#c0392b':'#E24B4A'};text-align:right">${t.overdue?'⚠ Overdue':'Due'}<br><span style="font-weight:400;color:#aaa">${t.due}</span></div>
+      </div>`).join('');
+
+  const activeCount = countActiveForPM(name);
+
+  return `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:12px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:34px;height:34px;border-radius:50%;background:${pmColor};color:#fff;font-size:15px;font-weight:500;display:flex;align-items:center;justify-content:center">${liveName[0]}</div>
+        <div>
+          <div style="font-size:14px;font-weight:500;color:#111">${liveName}</div>
+          <div style="font-size:11px;color:#888">Project Manager · ${myProps.length} propert${myProps.length===1?'y':'ies'} · <span style="color:#E24B4A;font-weight:500">${upcoming14Count} task${upcoming14Count!==1?'s':''} due in 14 days</span></div>
+        </div>
+      </div>
+      <div style="background:#fff;border:0.5px solid #e0e4ec;border-radius:10px;padding:12px 20px;text-align:center;flex-shrink:0;min-width:110px">
+        <div style="font-size:10px;color:#999;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">Active Projects</div>
+        <div style="font-size:28px;font-weight:500;color:#111">${activeCount}</div>
+        <div style="font-size:10px;color:#aaa;margin-top:2px">Framing → Pre-listing</div>
+      </div>
+    </div>
+
+    <!-- Upcoming Due Tasks card (full width, task portal only note) -->
+    <div style="background:#fff;border:0.5px solid #e0e4ec;border-radius:10px;overflow:hidden;border-top:3px solid #185FA5;margin-bottom:12px">
+      <div style="padding:9px 13px;border-bottom:0.5px solid #eef0f6;display:flex;align-items:center;justify-content:space-between">
+        <div style="font-size:11.5px;font-weight:500;color:#111">📋 Upcoming Due Tasks</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:10px;background:#E6F1FB;color:#185FA5;padding:2px 8px;border-radius:99px">${upcoming14Count} due in 14 days</span>
+          <span style="font-size:10px;color:#aaa;background:#f9f9f9;padding:2px 7px;border-radius:4px">Task portal only — connects to Tasks/Schedule tab</span>
+        </div>
+      </div>
+      <div style="padding:8px 13px">${taskRows}</div>
+    </div>
+
+    <!-- 6 boards grid -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+      ${boardCardPM("SOW & Budgets",                "#E6F1FB","#185FA5", boards["SOW & Budgets"])}
+      ${boardCardPM("Permits & Drawings",           "#FBEAF0","#D4537E", boards["Permits & Drawings"])}
+      ${boardCardPM("Design Budgets & Status",      "#EEEDFE","#7F77DD", boards["Design Budgets & Design Status"])}
+      ${boardCardPM("Takedowns / Vacancies",        "#FCEBEB","#E24B4A", boards["Takedowns / Vacancies"])}
+      ${boardCardPM("Pre Listing Phase",            "#FAECE7","#D85A30", boards["Pre Listing Phase"])}
+      ${boardCardPM("Remedy / Upcoming Closings",   "#EAF3DE","#3B6D11", boards["Remedy Requests / Upcoming Closings"])}
+    </div>`;
+}
+
+function pmStatRow(label, val, color) {
+  return `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid #f4f5f7;font-size:12px">
+    <span style="color:#888">${label}</span>
+    <span style="font-weight:500;color:${color}">${val}</span>
+  </div>`;
+}
+
+
+
+  // Get this PM's properties sorted by end date (soonest first, no date at bottom)
+  const myProps = propCards
+    .filter(c => c.pm === name)
+    .sort((a, b) => {
+      if (!a.end && !b.end) return 0;
+      if (!a.end) return 1;
+      if (!b.end) return -1;
+      return new Date(a.end) - new Date(b.end);
+    });
+
+  const today = new Date(); today.setHours(0,0,0,0);
+
+
+function pmStatRow(label, val, color) {
+  return `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid #f4f5f7;font-size:12px">
+    <span style="color:#888">${label}</span>
+    <span style="font-weight:500;color:${color}">${val}</span>
+  </div>`;
+}
+
+function openDesignDashboard() {
+  document.querySelectorAll(".dd").forEach(x => x.classList.remove("open"));
+  document.querySelectorAll(".ni.has-dd").forEach(x => x.classList.remove("on"));
+  document.getElementById("dash-body").innerHTML = `
+    <div class="empty-state">
+      <div class="icon">🎨</div>
+      <p style="color:#888;font-size:15px;font-weight:500">Design Dashboard</p>
+      <p style="color:#555;font-size:13px;margin-top:6px">This dashboard is being built out. Check back soon.</p>
+    </div>
+  `;
+}
+
+// ===================== DATA DASHBOARD =====================
+
+// Access helpers
+function currentUser() {
+  const s = getSession();
+  if (!s) return null;
+  return getUsers().find(u => u.id === s.id) || null;
+}
+function isBruce(u) {
+  return u && u.email === "bruce@legacyohiohomes.com";
+}
+function isBruceOrSeniorVA(u) {
+  if (!u) return false;
+  if (isBruce(u)) return true;
+  return u.role === "Senior Virtual Administrative Assistant" || u.email === "idoko@legacyohiohomes.com";
+}
+
+// Hide restricted items based on logged-in user
+function applyDataAccessUI() {
+  const u = currentUser();
+  const overhead = document.getElementById("dd-overhead");
+  const teamspent = document.getElementById("dd-teamspent");
+  if (!overhead || !teamspent) return;
+
+  if (!u || !isBruce(u)) {
+    overhead.style.opacity = "0.35";
+    overhead.style.cursor = "not-allowed";
+    overhead.onclick = (e) => { e.stopPropagation(); showAccessDenied("PT Overhead & Expenses is restricted to Bruce only."); };
+  }
+  if (!u || !isBruceOrSeniorVA(u)) {
+    teamspent.style.opacity = "0.35";
+    teamspent.style.cursor = "not-allowed";
+    teamspent.onclick = (e) => { e.stopPropagation(); showAccessDenied("Project Team Spent is restricted to Bruce and the Senior Virtual Administrative Assistant."); };
+  }
+}
+
+function showAccessDenied(msg) {
+  document.querySelectorAll(".dd").forEach(x => x.classList.remove("open"));
+  document.querySelectorAll(".ni.has-dd").forEach(x => x.classList.remove("on"));
+  document.getElementById("access-denied-msg").textContent = msg;
+  openModal("access-denied-modal");
+}
+
+function openDataSection(type) {
+  const u = currentUser();
+  document.querySelectorAll(".dd").forEach(x => x.classList.remove("open"));
+  document.querySelectorAll(".ni.has-dd").forEach(x => x.classList.remove("on"));
+
+  if (type === "overhead" && !isBruce(u)) {
+    showAccessDenied("PT Overhead & Expenses is restricted to Bruce only.");
+    return;
+  }
+  if (type === "teamspent" && !isBruceOrSeniorVA(u)) {
+    showAccessDenied("Project Team Spent is restricted to Bruce and the Senior Virtual Administrative Assistant.");
+    return;
+  }
+
+  const label = type === "overhead" ? "💼 PT Overhead & Expenses" : "💸 Project Team Spent";
+  document.getElementById("dash-body").innerHTML = `
+    <div class="empty-state">
+      <div class="icon">${type === "overhead" ? "💼" : "💸"}</div>
+      <p style="color:#888;font-size:15px;font-weight:500">${label}</p>
+      <p style="color:#555;font-size:13px;margin-top:6px">This section is being built out. Data will populate here once connected.</p>
+    </div>
+  `;
+}
+
+// ===================== PM DASHBOARD =====================
+const PM_DATA = {
+  Bruce: {
+    email: "bruce@legacyohiohomes.com",
+    emoji: "👤", color: "blue",
+    avgDailyWork: "--", budgetPct: { on: "--", over: "--" },
+    timelinePct: { on: "--", over: "--" }, flipsCompleted: "--", rentalHandoffs: "--"
+  },
+  Andrew: {
+    email: "andrewscrape@legacyohiohomes.com",
+    emoji: "👤", color: "green",
+    avgDailyWork: "--", budgetPct: { on: "--", over: "--" },
+    timelinePct: { on: "--", over: "--" }, flipsCompleted: "--", rentalHandoffs: "--"
+  },
+  Isaiah: {
+    email: "isaiah@legacyohiohomes.com",
+    emoji: "👤", color: "purple",
+    avgDailyWork: "--", budgetPct: { on: "--", over: "--" },
+    timelinePct: { on: "--", over: "--" }, flipsCompleted: "--", rentalHandoffs: "--"
+  }
+};
+
+// Resolve live name from registered account if they've signed up
+function resolvePMName(pmKey) {
+  const users = getUsers();
+  const pmEmail = PM_DATA[pmKey]?.email;
+  if (!pmEmail) return pmKey;
+  const user = users.find(u => u.email === pmEmail && u.status === "approved");
+  return user ? user.firstName + " " + user.lastName : pmKey;
+}
+function resolvePMStatus(pmKey) {
+  const users = getUsers();
+  const pmEmail = PM_DATA[pmKey]?.email;
+  if (!pmEmail) return null;
+  return users.find(u => u.email === pmEmail && u.status === "approved") || null;
+}
+
+function pmCard(name, d, liveName) {
+  const colors = { Bruce: "blue", Andrew: "green", Isaiah: "purple" };
+  const titles = { Bruce: "Project Director", Andrew: "Project Manager", Isaiah: "Project Manager" };
+  const c = colors[name] || "blue";
+  const title = titles[name] || "Project Manager";
+  const displayName = liveName || name;
+  return `
+    <div style="background:#111;border:1px solid #2a2a2a;border-radius:10px;overflow:hidden">
+      <div style="background:#161616;padding:14px 16px;border-bottom:1px solid #2a2a2a;display:flex;align-items:center;gap:10px">
+        <div style="width:36px;height:36px;border-radius:50%;background:#1a2744;border:2px solid #2e4070;display:flex;align-items:center;justify-content:center;font-size:16px">👤</div>
+        <div>
+          <div style="font-size:14px;font-weight:500;color:#fff">${displayName}</div>
+          <div style="font-size:11px;color:#555">${title}</div>
+        </div>
+      </div>
+      <div style="padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+        <div class="pm-stat-card ${c}" style="margin:0">
+          <div class="pm-stat-label">Avg. Work Completed / Day</div>
+          <div class="pm-stat-value">${d.avgDailyWork === "--" ? "--" : "$" + d.avgDailyWork}</div>
+          <div class="pm-stat-sub">Across all projects</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="pm-stat-card green" style="margin:0">
+            <div class="pm-stat-label">In Budget</div>
+            <div class="pm-stat-value" style="font-size:20px">${d.budgetPct.on}%</div>
+            <div class="pm-stat-sub">${d.budgetPct.over}% over</div>
+          </div>
+          <div class="pm-stat-card amber" style="margin:0">
+            <div class="pm-stat-label">Over Budget</div>
+            <div class="pm-stat-value" style="font-size:20px">${d.budgetPct.over}%</div>
+            <div class="pm-stat-sub">${d.budgetPct.on}% on target</div>
+          </div>
+          <div class="pm-stat-card blue" style="margin:0">
+            <div class="pm-stat-label">On Timeline</div>
+            <div class="pm-stat-value" style="font-size:20px">${d.timelinePct.on}%</div>
+            <div class="pm-stat-sub">${d.timelinePct.over}% over</div>
+          </div>
+          <div class="pm-stat-card coral" style="margin:0">
+            <div class="pm-stat-label">Over Timeline</div>
+            <div class="pm-stat-value" style="font-size:20px">${d.timelinePct.over}%</div>
+            <div class="pm-stat-sub">${d.timelinePct.on}% on time</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="pm-stat-card purple" style="margin:0">
+            <div class="pm-stat-label">Flips Completed</div>
+            <div class="pm-stat-value" style="font-size:22px">${d.flipsCompleted}</div>
+            <div class="pm-stat-sub">All time</div>
+          </div>
+          <div class="pm-stat-card green" style="margin:0">
+            <div class="pm-stat-label">Rental Hand Offs</div>
+            <div class="pm-stat-value" style="font-size:22px">${d.rentalHandoffs}</div>
+            <div class="pm-stat-sub">All time</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function openPMDashboard() {
+  document.querySelectorAll(".dd").forEach(x => x.classList.remove("open"));
+  document.querySelectorAll(".ni.has-dd").forEach(x => x.classList.remove("on"));
+
+  const body = document.getElementById("pm-dash-body");
+  body.innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
+      ${pmCard("Bruce", PM_DATA.Bruce, resolvePMName("Bruce"))}
+      ${pmCard("Andrew", PM_DATA.Andrew, resolvePMName("Andrew"))}
+      ${pmCard("Isaiah", PM_DATA.Isaiah, resolvePMName("Isaiah"))}
+    </div>
+    <div class="pm-note" style="margin-top:20px">📌 All metrics will populate automatically once connected to your project management platform. Data updates in real time as projects are completed.</div>
+  `;
+
+  openModal("pm-dash-modal");
+}
+
+// ===================== SOP DATA =====================
+const ROLE_SOPS = {
+  "Project Director": {
+    icon: "⬡",
+    sections: [
+      { title: "Role Overview", items: [
+        "The Project Director holds overall accountability for all active Legacy Homes projects from acquisition through final close-out.",
+        "Serve as the primary decision-maker for escalations that cannot be resolved at the Project Manager or Assistant Manager level.",
+        "Maintain regular communication with ownership regarding project status, budget performance, and team capacity."
+      ]},
+      { title: "Daily Responsibilities", items: [
+        "Review the Active Data dashboard each morning for project status updates, open blockers, and overdue tasks.",
+        "Conduct or delegate daily stand-up check-ins with Project Managers.",
+        "Review and approve any change orders exceeding the Project Manager approval threshold.",
+        "Monitor overall portfolio budget versus actuals and flag variances to ownership."
+      ]},
+      { title: "Weekly Responsibilities", items: [
+        "Lead the weekly all-hands project review meeting.",
+        "Review all Reporting dashboards and prepare a weekly summary for ownership.",
+        "Review pending account registrations and approve or deny access as needed.",
+        "Audit team access levels to ensure role-appropriate permissions are maintained."
+      ]},
+      { title: "Systems & Processes References", items: [
+        "Refer to the Project Lifecycle SOP for full stage-by-stage project process.",
+        "Refer to the Budget & Cost Tracking SOP for financial oversight procedures.",
+        "Refer to the Team Communication SOP for escalation protocols."
+      ]}
+    ]
+  },
+  "Project Manager": {
+    icon: "🏗",
+    sections: [
+      { title: "Role Overview", items: [
+        "The Project Manager is responsible for the day-to-day execution of assigned renovation or construction projects.",
+        "Oversee all on-site activity, subcontractors, and timelines from project start through completion.",
+        "Report directly to the Project Director and escalate any issues that cannot be resolved within project parameters."
+      ]},
+      { title: "Daily Responsibilities", items: [
+        "Check in on all active job sites at the start of each day and document conditions.",
+        "Update task statuses in the Active Data dashboard by end of day.",
+        "Coordinate material deliveries and confirm subcontractor scheduling.",
+        "Submit or review any change orders and flag to Project Director if over threshold."
+      ]},
+      { title: "Weekly Responsibilities", items: [
+        "Submit a project status report for each active project every Monday.",
+        "Review the schedule and timeline for the upcoming week with the Asst. Manager.",
+        "Conduct crew assignment review and adjust labor as needed.",
+        "Attend the weekly all-hands project review meeting."
+      ]},
+      { title: "Systems & Processes References", items: [
+        "Refer to the Project Lifecycle SOP for full stage-by-stage procedures.",
+        "Refer to the Subcontractor Management SOP for vendor coordination.",
+        "Refer to the Inspection Checklist SOP before scheduling any inspection."
+      ]}
+    ]
+  },
+  "Administrative Assistant": {
+    icon: "🏢",
+    sections: [
+      { title: "Role Overview", items: [
+        "The Administrative Assistant supports the administrative operations of Legacy Homes under the direction of the Senior Administrative Assistant or Administrative Manager.",
+        "Responsible for document management, scheduling support, and general office coordination."
+      ]},
+      { title: "Daily Responsibilities", items: [
+        "Process incoming documents and file them in the correct system folders.",
+        "Respond to internal communications within 2 business hours.",
+        "Assist with scheduling meetings and coordinating calendars as directed.",
+        "Support billing and invoice entry as assigned."
+      ]},
+      { title: "Weekly Responsibilities", items: [
+        "Audit document folders to ensure all files are correctly labeled and stored.",
+        "Assist with weekly reporting data collection.",
+        "Attend team meetings and record action items."
+      ]},
+      { title: "Systems & Processes References", items: [
+        "Refer to the Document Management SOP for filing standards.",
+        "Refer to the Communication SOP for internal email and messaging protocols."
+      ]}
+    ]
+  },
+  "Senior Administrative Assistant": {
+    icon: "🏢",
+    sections: [
+      { title: "Role Overview", items: [
+        "The Senior Administrative Assistant leads administrative operations for their assigned area and supervises Administrative Assistants.",
+        "Acts as the first point of escalation for administrative issues before reaching the Administrative Manager."
+      ]},
+      { title: "Daily Responsibilities", items: [
+        "Oversee document processing and quality-check completed work from Administrative Assistants.",
+        "Manage contract tracking and ensure all executed documents are properly stored.",
+        "Coordinate directly with Project Managers on administrative needs tied to active projects.",
+        "Review and process invoices for payment approval routing."
+      ]},
+      { title: "Weekly Responsibilities", items: [
+        "Submit an administrative operations summary to the Administrative Manager.",
+        "Conduct a weekly review of all open contracts and flag any that are past due.",
+        "Lead the Administrative Assistant team check-in."
+      ]},
+      { title: "Systems & Processes References", items: [
+        "Refer to the Contract Management SOP for execution and storage procedures.",
+        "Refer to the Billing & Invoicing SOP for payment processing workflows."
+      ]}
+    ]
+  },
+  "Virtual Administrative Assistant": {
+    icon: "💻",
+    sections: [
+      { title: "Role Overview", items: [
+        "The Virtual Administrative Assistant performs remote administrative support functions for Legacy Homes.",
+        "Works primarily within digital systems and is responsible for maintaining data accuracy across platforms."
+      ]},
+      { title: "Daily Responsibilities", items: [
+        "Log into all assigned systems at the start of each shift and confirm access is active.",
+        "Process assigned data entry tasks and update records as directed.",
+        "Monitor assigned communication channels and respond or route messages per protocol.",
+        "Complete assigned document preparation tasks and submit for review."
+      ]},
+      { title: "Weekly Responsibilities", items: [
+        "Submit a weekly activity log summarizing tasks completed.",
+        "Flag any system access issues or data discrepancies to the supervising Senior VA.",
+        "Attend virtual team check-in meeting."
+      ]},
+      { title: "Systems & Processes References", items: [
+        "Refer to the Remote Work & Systems Access SOP for login and security protocols.",
+        "Refer to the Data Entry Standards SOP for formatting and accuracy requirements."
+      ]}
+    ]
+  },
+  "Senior Virtual Administrative Assistant": {
+    icon: "💻",
+    sections: [
+      { title: "Role Overview", items: [
+        "The Senior Virtual Administrative Assistant leads the virtual administrative team and is responsible for quality control across all remote administrative functions.",
+        "Reports directly to the Administrative Manager and serves as the supervisor for Virtual Administrative Assistants."
+      ]},
+      { title: "Daily Responsibilities", items: [
+        "Review and approve completed work submitted by Virtual Administrative Assistants.",
+        "Manage escalated data or document issues that require senior-level resolution.",
+        "Maintain master tracking sheets for all virtual administrative workflows.",
+        "Coordinate with on-site administrative staff to ensure continuity across teams."
+      ]},
+      { title: "Weekly Responsibilities", items: [
+        "Submit a virtual team performance summary to the Administrative Manager.",
+        "Conduct quality audits on a random sample of VA-completed work.",
+        "Lead the virtual assistant team weekly meeting."
+      ]},
+      { title: "Systems & Processes References", items: [
+        "Refer to the Remote Work & Systems Access SOP for security and compliance protocols.",
+        "Refer to the Quality Control SOP for work review standards."
+      ]}
+    ]
+  },
+  "Start of Project Assistant": {
+    icon: "🚀",
+    sections: [
+      { title: "Role Overview", items: [
+        "The Start of Project Assistant is responsible for all setup and onboarding tasks required to launch a new project at Legacy Homes.",
+        "Works closely with the Project Manager to ensure all systems, documents, permits, and resources are in place before work begins."
+      ]},
+      { title: "Project Launch Checklist", items: [
+        "Create the project file in the Active Data system with all required property information.",
+        "Confirm that the purchase contract and title documents are executed and filed.",
+        "Set up the project budget template and enter the initial scope of work line items.",
+        "Coordinate permit applications with the appropriate municipality.",
+        "Confirm utility status and schedule any required pre-start inspections.",
+        "Issue initial material and supply orders per the approved scope.",
+        "Assign subcontractors and issue Notice to Proceed documents."
+      ]},
+      { title: "Handoff Responsibilities", items: [
+        "Once all start-of-project tasks are complete, prepare a Project Launch Summary and deliver to the Project Manager.",
+        "Transfer active project ownership in the system to the assigned Project Manager.",
+        "Remain available for the first week of active construction to address any launch issues."
+      ]},
+      { title: "Systems & Processes References", items: [
+        "Refer to the Project Launch Checklist SOP for the complete step-by-step process.",
+        "Refer to the Permit & Compliance SOP for municipality-specific requirements."
+      ]}
+    ]
+  },
+  "End of Project Assistant": {
+    icon: "🏁",
+    sections: [
+      { title: "Role Overview", items: [
+        "The End of Project Assistant is responsible for all close-out tasks required to complete and close a Legacy Homes project.",
+        "Works closely with the Project Manager to ensure all inspections, punch lists, documentation, and financials are finalized before project closure."
+      ]},
+      { title: "Project Close-Out Checklist", items: [
+        "Confirm all punch list items are completed and signed off by the Project Manager.",
+        "Schedule and coordinate the final inspection with the appropriate authority.",
+        "Collect and file all lien waivers from subcontractors and suppliers.",
+        "Reconcile the final project budget and submit the cost summary to the Project Director.",
+        "Ensure all warranty documents and product manuals are collected and filed.",
+        "Update the Active Data system to reflect project completion status.",
+        "Archive all project documents in the correct permanent storage location."
+      ]},
+      { title: "Final Handoff", items: [
+        "Prepare the Project Close-Out Report and submit to the Project Director for review.",
+        "Confirm the property is ready for listing, sale, or occupancy per the project type.",
+        "Complete the post-project debrief form and submit to the Administrative Manager."
+      ]},
+      { title: "Systems & Processes References", items: [
+        "Refer to the Project Close-Out Checklist SOP for the complete process.",
+        "Refer to the Lien Waiver & Compliance SOP for document requirements.",
+        "Refer to the Budget Reconciliation SOP for financial close-out procedures."
+      ]}
+    ]
+  },
+  "VA Assistant": {
+    icon: "💻",
+    sections: [
+      { title: "Role Overview", items: [
+        "The VA Assistant provides virtual administrative and operational support to assigned team members at Legacy Homes.",
+        "Works remotely and is responsible for completing assigned tasks accurately and on time within digital systems.",
+        "Reports to the Senior Virtual Administrative Assistant or directly to the Administrative Manager."
+      ]},
+      { title: "Daily Responsibilities", items: [
+        "Log into all assigned systems at the start of each shift and confirm access is active.",
+        "Complete assigned tasks and update status in the project management system by end of shift.",
+        "Monitor assigned communication channels and respond or route messages per protocol.",
+        "Submit a daily task log to your supervising team member."
+      ]},
+      { title: "Weekly Responsibilities", items: [
+        "Attend the virtual team weekly check-in.",
+        "Submit a weekly activity summary to your supervisor.",
+        "Flag any system issues or task blockers promptly."
+      ]},
+      { title: "Systems & Processes References", items: [
+        "Refer to the Remote Work & Systems Access SOP for login and security protocols.",
+        "Refer to the Data Entry Standards SOP for formatting and accuracy requirements.",
+        "Refer to the Communication SOP for internal messaging protocols."
+      ]}
+    ]
+  },
+  "Architect": {
+    icon: "📐",
+    sections: [
+      { title: "Role Overview", items: [
+        "The Architect is responsible for design planning, drafting, and architectural review across all Legacy Homes renovation and construction projects.",
+        "Works closely with Project Managers to ensure designs are feasible, code-compliant, and aligned with project budgets and timelines.",
+        "Provides design documentation, blueprint review, and design revision support as needed throughout the project lifecycle."
+      ]},
+      { title: "Daily Responsibilities", items: [
+        "Review active project design requests and prioritize based on project schedule.",
+        "Prepare, revise, and submit architectural drawings and design documentation as assigned.",
+        "Coordinate with Project Managers on design-related questions, site conditions, and change requests.",
+        "Update design task statuses in the project management system."
+      ]},
+      { title: "Weekly Responsibilities", items: [
+        "Attend the weekly project review meeting and flag any design-related blockers.",
+        "Submit a design progress update for all active projects.",
+        "Review any incoming change orders that have design implications and provide feedback."
+      ]},
+      { title: "Systems & Processes References", items: [
+        "Refer to the Project Lifecycle SOP for design phase timing and deliverables.",
+        "Refer to the Change Orders SOP for design revision request procedures.",
+        "Refer to the Permit & Compliance SOP for drawing submission requirements."
+      ]}
+    ]
+  },
+  "Assistant / Intern": {
+    icon: "🎓",
+    sections: [
+      { title: "Role Overview", items: [
+        "The Assistant / Intern supports various teams across Legacy Homes under direct supervision.",
+        "This role is a learning position — you will be assigned tasks by your supervising team member and are expected to ask questions and follow all SOPs precisely."
+      ]},
+      { title: "General Expectations", items: [
+        "Report to your assigned supervisor at the start of each shift.",
+        "Do not take independent action on any task without supervisor approval.",
+        "Complete all assigned tasks by the agreed deadline and notify your supervisor immediately if you anticipate a delay.",
+        "Treat all company and client information as strictly confidential.",
+        "Ask questions before starting any task you are unsure about — it is always better to clarify."
+      ]},
+      { title: "Daily Responsibilities", items: [
+        "Check in with your assigned supervisor each morning for the day's task list.",
+        "Log completed tasks and hours in the system as directed.",
+        "Attend any team meetings your supervisor includes you in."
+      ]},
+      { title: "Systems & Processes References", items: [
+        "Refer to the Onboarding SOP for your initial setup and system access steps.",
+        "Refer to the Communication SOP for how to properly communicate internally."
+      ]}
+    ]
+  }
+};
+
+const SYSTEMS_SOPS = [
+  { id: "project-lifecycle", icon: "🔄", title: "Project Lifecycle", desc: "Full stage-by-stage process from acquisition to close-out" },
+  { id: "budget-cost", icon: "💰", title: "Budget & Cost Tracking", desc: "Financial oversight, variance reporting, and approval thresholds" },
+  { id: "subcontractor-mgmt", icon: "🔨", title: "Subcontractor Management", desc: "Vendor selection, contracting, scheduling, and payment" },
+  { id: "inspection-checklist", icon: "✅", title: "Inspection Checklist", desc: "Pre-inspection prep, scheduling, and follow-up procedures" },
+  { id: "permit-compliance", icon: "📋", title: "Permit & Compliance", desc: "Municipality-specific permit applications and compliance tracking" },
+  { id: "document-mgmt", icon: "📁", title: "Document Management", desc: "Filing standards, naming conventions, and storage locations" },
+  { id: "contract-mgmt", icon: "📄", title: "Contract Management", desc: "Execution, storage, and renewal procedures for all contracts" },
+  { id: "billing-invoicing", icon: "🧾", title: "Billing & Invoicing", desc: "Invoice processing, approval routing, and payment workflows" },
+  { id: "communication", icon: "💬", title: "Team Communication", desc: "Internal messaging protocols, escalation paths, and meeting standards" },
+  { id: "remote-access", icon: "🔒", title: "Remote Work & Systems Access", desc: "Login security, VPN usage, and remote work protocols" },
+  { id: "data-entry", icon: "💾", title: "Data Entry Standards", desc: "Formatting, accuracy requirements, and quality control checks" },
+  { id: "project-launch", icon: "🚀", title: "Project Launch Checklist", desc: "Step-by-step process for setting up and launching a new project" },
+  { id: "project-closeout", icon: "🏁", title: "Project Close-Out Checklist", desc: "Step-by-step process for completing and closing out a project" },
+  { id: "lien-waiver", icon: "📜", title: "Lien Waiver & Compliance", desc: "Collecting, verifying, and filing lien waivers from all parties" },
+  { id: "budget-reconciliation", icon: "📊", title: "Budget Reconciliation", desc: "Final cost reconciliation and financial close-out procedures" },
+  { id: "onboarding", icon: "🎓", title: "Onboarding", desc: "New team member setup, system access, and orientation process" },
+  { id: "quality-control", icon: "🔍", title: "Quality Control", desc: "Work review standards, audit procedures, and correction protocols" },
+  { id: "hr-policies", icon: "👥", title: "HR Policies", desc: "Time off, conduct expectations, performance reviews, and HR procedures" }
+];
+
+// ===================== SOP FUNCTIONS =====================
+function openSOP(type, role) {
+  document.querySelectorAll(".dd").forEach(x => x.classList.remove("open"));
+  document.querySelectorAll(".ni.has-dd").forEach(x => x.classList.remove("on"));
+
+  if (type === "systems") {
+    renderSystemsGrid();
+    openModal("systems-modal");
+    return;
+  }
+
+  const sop = ROLE_SOPS[role];
+  if (!sop) return;
+
+  document.getElementById("sop-modal-title").textContent = sop.icon + " " + role + " SOP";
+  let html = "";
+  sop.sections.forEach(sec => {
+    html += `<div class="sop-section"><h3>${sec.title}</h3>`;
+    sec.items.forEach((item, i) => {
+      html += `<div class="sop-item"><span class="sop-num">${String(i+1).padStart(2,"0")}.</span><span class="sop-text">${item}</span></div>`;
+    });
+    html += `</div>`;
+  });
+  html += `<div class="sop-note">📌 This SOP is a living document. Content will be expanded by your administrator as processes are finalized. Check back regularly for updates.</div>`;
+  document.getElementById("sop-modal-body").innerHTML = html;
+  openModal("sop-modal");
+}
+
+function renderSystemsGrid() {
+  const grid = document.getElementById("systems-grid");
+  grid.innerHTML = SYSTEMS_SOPS.map(s => `
+    <div class="sys-card" onclick="openSystemSOP('${s.id}')">
+      <div class="sys-card-icon">${s.icon}</div>
+      <div class="sys-card-title">${s.title}</div>
+      <div class="sys-card-desc">${s.desc}</div>
+    </div>
+  `).join("");
+}
+
+function openSystemSOP(id) {
+  const s = SYSTEMS_SOPS.find(x => x.id === id);
+  if (!s) return;
+  document.getElementById("sys-sop-title").textContent = s.icon + " " + s.title + " SOP";
+  document.getElementById("sys-sop-body").innerHTML = `
+    <div class="sop-placeholder">
+      <div class="ph-icon">${s.icon}</div>
+      <div style="font-size:14px;color:#888;margin-bottom:8px;font-weight:500">${s.title}</div>
+      <div style="font-size:13px;color:#555;margin-bottom:16px">${s.desc}</div>
+      <div style="font-size:12px;color:#444;border:1px dashed #333;border-radius:6px;padding:12px">
+        This SOP is ready to be built out. Your administrator can add the full step-by-step process, checklists, and reference materials here.
+      </div>
+    </div>
+    <div class="sop-note" style="margin-top:16px">📌 Systems &amp; Processes SOPs are built and maintained by the Project Director or Administrative Manager. Contact Bruce@legacyohiohomes.com to contribute content to this SOP.</div>
+  `;
+  closeModal("systems-modal");
+  openModal("sys-sop-modal");
+}
+
+// ===================== HELPERS =====================
+function showErr(el, msg) { el.textContent = msg; el.style.display = "block"; }
+
+// ===================== HOME SCREENS =====================
+
+// Shared widgets used on every role's home screen
+function sharedWidgets() {
+  return `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px">
+      <div style="background:#111;border:1px solid #2a2a2a;border-radius:10px;overflow:hidden">
+        <div style="padding:10px 16px;border-bottom:1px solid #2a2a2a;display:flex;align-items:center;justify-content:space-between">
+          <div style="font-size:12px;font-weight:500;color:#fff;display:flex;align-items:center;gap:7px">✅ Upcoming Due Tasks</div>
+          <div style="font-size:10px;color:#444;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:4px;padding:2px 7px">Links to task list</div>
+        </div>
+        <div style="padding:12px 16px">
+          <div style="text-align:center;padding:18px 0">
+            <div style="font-size:22px;margin-bottom:6px">📋</div>
+            <div style="font-size:12px;color:#555">No tasks connected yet</div>
+            <div style="font-size:11px;color:#3a3a3a;margin-top:4px">Will auto-populate once task list is built</div>
+          </div>
+        </div>
+      </div>
+      <div style="background:#111;border:1px solid #2a2a2a;border-radius:10px;overflow:hidden">
+        <div style="padding:10px 16px;border-bottom:1px solid #2a2a2a;display:flex;align-items:center;justify-content:space-between">
+          <div style="font-size:12px;font-weight:500;color:#fff;display:flex;align-items:center;gap:7px">📅 Upcoming Events <span style="font-size:10px;color:#555;font-weight:400">(2 weeks out)</span></div>
+          <div style="font-size:10px;color:#444;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:4px;padding:2px 7px">Links to calendars</div>
+        </div>
+        <div style="padding:12px 16px">
+          <div style="text-align:center;padding:18px 0">
+            <div style="font-size:22px;margin-bottom:6px">🗓</div>
+            <div style="font-size:12px;color:#555">No calendars connected yet</div>
+            <div style="font-size:11px;color:#3a3a3a;margin-top:4px">Will sync with internal &amp; Google Calendar</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+// Shared financial YTD table (Bruce + Senior VA)
+function finTable(showProjectStats) {
+  const yr = new Date().getFullYear();
+  const projStats = showProjectStats ? `
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px">
+      ${[
+        {icon:"🏗", label:"Active Projects",      val:countActive(),        color:"#fff"},
+        {icon:"🏪", label:"On the Market",         val:countOnMarket(),       color:"#5dade2"},
+        {icon:"📋", label:"Waiting on Permits",    val:countWaitingPermit(),  color:"#f39c12"},
+        {icon:"✅", label:"Closed This Year",      val:countClosedThisYear(), color:"#2ecc71"}
+      ].map(s=>`
+        <div style="background:#111;border:1px solid #2a2a2a;border-radius:8px;padding:10px 12px;text-align:center">
+          <div style="font-size:18px;margin-bottom:4px">${s.icon}</div>
+          <div style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:3px;line-height:1.3">${s.label}</div>
+          <div style="font-size:20px;font-weight:500;color:${s.color}">${s.val}</div>
+        </div>`).join("")}
+    </div>` : "";
+
+  return `
+    <div style="background:#111;border:1px solid #2a2a2a;border-radius:10px;overflow:hidden;margin-bottom:12px">
+      <div style="padding:11px 18px;border-bottom:1px solid #2a2a2a;display:flex;align-items:center;justify-content:space-between">
+        <div style="font-size:12px;font-weight:500;color:#fff">📊 Year-to-Date Financial Overview</div>
+        <div style="font-size:10px;color:#444">Auto-updates · ${yr}</div>
+      </div>
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse;font-size:12px">
+          <thead>
+            <tr style="border-bottom:1px solid #2a2a2a">
+              <th style="text-align:left;padding:8px 18px;font-size:10px;color:#555;font-weight:400;text-transform:uppercase;letter-spacing:0.05em;width:32%">Category</th>
+              <th style="text-align:right;padding:8px 18px;font-size:10px;color:#555;font-weight:400;text-transform:uppercase;letter-spacing:0.05em;width:18%">Amount</th>
+              <th style="text-align:left;padding:8px 18px;font-size:10px;color:#555;font-weight:400;text-transform:uppercase;letter-spacing:0.05em">Notes</th>
+              <th style="text-align:center;padding:8px 18px;font-size:10px;color:#555;font-weight:400;text-transform:uppercase;letter-spacing:0.05em;width:11%">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid #1a1a1a">
+              <td style="padding:10px 18px;color:#ccc;display:flex;align-items:center;gap:8px"><span>📋</span>Total Budget &amp; Expense Year Projected</td>
+              <td style="padding:10px 18px;text-align:right;font-size:15px;font-weight:500;color:#5dade2">--</td>
+              <td style="padding:10px 18px;color:#555;font-size:11px">Planned spend for all active projects</td>
+              <td style="padding:10px 18px;text-align:center"><span style="background:#1a1a1a;border:1px dashed #333;color:#444;font-size:10px;padding:2px 7px;border-radius:99px">Pending</span></td>
+            </tr>
+            <tr style="border-bottom:1px solid #1a1a1a">
+              <td style="padding:10px 18px;color:#ccc;display:flex;align-items:center;gap:8px"><span>💸</span>Total Year Spent</td>
+              <td style="padding:10px 18px;text-align:right;font-size:15px;font-weight:500;color:#e74c3c">--</td>
+              <td style="padding:10px 18px;color:#555;font-size:11px">Actual spend to date across all projects</td>
+              <td style="padding:10px 18px;text-align:center"><span style="background:#1a1a1a;border:1px dashed #333;color:#444;font-size:10px;padding:2px 7px;border-radius:99px">Pending</span></td>
+            </tr>
+            <tr style="border-bottom:1px solid #1a1a1a">
+              <td style="padding:10px 18px;color:#ccc;display:flex;align-items:center;gap:8px"><span>💰</span>Total Gross Income</td>
+              <td style="padding:10px 18px;text-align:right;font-size:15px;font-weight:500;color:#2ecc71">--</td>
+              <td style="padding:10px 18px;color:#555;font-size:11px">Revenue from all closed deals YTD</td>
+              <td style="padding:10px 18px;text-align:center"><span style="background:#1a1a1a;border:1px dashed #333;color:#444;font-size:10px;padding:2px 7px;border-radius:99px">Pending</span></td>
+            </tr>
+            <tr style="background:#161616">
+              <td style="padding:10px 18px;color:#fff;font-weight:500;display:flex;align-items:center;gap:8px"><span>📈</span>Total Net Income</td>
+              <td style="padding:10px 18px;text-align:right;font-size:16px;font-weight:500;color:#f39c12">--</td>
+              <td style="padding:10px 18px;color:#555;font-size:11px">Gross Income − Total Year Spent</td>
+              <td style="padding:10px 18px;text-align:center"><span style="background:#2d2200;border:1px solid #f39c12;color:#f39c12;font-size:10px;padding:2px 7px;border-radius:99px">Live Calc</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="padding:8px 18px;border-top:1px solid #2a2a2a;font-size:10px;color:#3a3a3a">
+        🔗 Connects automatically as budget, expense &amp; income data is built out.
+      </div>
+    </div>
+    ${projStats}`;
+}
+
+// Role-specific top widgets
+function roleWidget(role) {
+  const widgets = {
+    "Project Director": [
+      {icon:"🏗", label:"Active Projects", val:"--", color:"#fff"},
+      {icon:"🚩", label:"Escalations Open", val:"--", color:"#e74c3c"},
+      {icon:"👷", label:"Crew Members Active", val:"--", color:"#5dade2"},
+      {icon:"📈", label:"On-Time Completion %", val:"--%", color:"#2ecc71"}
+    ],
+    "Project Manager": [
+      {icon:"🏗", label:"My Active Projects", val:"--", color:"#fff"},
+      {icon:"📋", label:"Open Tasks", val:"--", color:"#f39c12"},
+      {icon:"✅", label:"Inspections Due", val:"--", color:"#e74c3c"},
+      {icon:"📄", label:"Pending Change Orders", val:"--", color:"#5dade2"}
+    ],
+    "Administrative Assistant": [
+      {icon:"📁", label:"Docs to File", val:"--", color:"#fff"},
+      {icon:"📅", label:"Meetings This Week", val:"--", color:"#5dade2"},
+      {icon:"📬", label:"Unread Messages", val:"--", color:"#f39c12"},
+      {icon:"🧾", label:"Invoices to Process", val:"--", color:"#2ecc71"}
+    ],
+    "Senior Administrative Assistant": [
+      {icon:"📄", label:"Contracts Pending", val:"--", color:"#fff"},
+      {icon:"🧾", label:"Invoices in Queue", val:"--", color:"#f39c12"},
+      {icon:"👥", label:"Team Tasks Open", val:"--", color:"#5dade2"},
+      {icon:"⚠️", label:"Past-Due Items", val:"--", color:"#e74c3c"}
+    ],
+    "Virtual Administrative Assistant": [
+      {icon:"✅", label:"Tasks Assigned", val:"--", color:"#fff"},
+      {icon:"💾", label:"Data Entries Due", val:"--", color:"#5dade2"},
+      {icon:"📬", label:"Messages to Route", val:"--", color:"#f39c12"},
+      {icon:"📋", label:"Docs to Prepare", val:"--", color:"#2ecc71"}
+    ],
+    "Senior Virtual Administrative Assistant": [
+      {icon:"👥", label:"VA Team Tasks", val:"--", color:"#fff"},
+      {icon:"🔍", label:"QC Reviews Due", val:"--", color:"#f39c12"},
+      {icon:"📊", label:"Reports Pending", val:"--", color:"#5dade2"},
+      {icon:"⚠️", label:"Escalations Open", val:"--", color:"#e74c3c"}
+    ],
+    "Start of Project Assistant": [
+      {icon:"🚀", label:"Projects in Launch", val:"--", color:"#fff"},
+      {icon:"📋", label:"Permits Applied", val:"--", color:"#5dade2"},
+      {icon:"📦", label:"Orders Placed", val:"--", color:"#f39c12"},
+      {icon:"✅", label:"Launches Complete", val:"--", color:"#2ecc71"}
+    ],
+    "End of Project Assistant": [
+      {icon:"🏁", label:"Projects in Close-Out", val:"--", color:"#fff"},
+      {icon:"📜", label:"Lien Waivers Pending", val:"--", color:"#e74c3c"},
+      {icon:"✅", label:"Punch Lists Open", val:"--", color:"#f39c12"},
+      {icon:"📊", label:"Budgets to Reconcile", val:"--", color:"#5dade2"}
+    ],
+    "Assistant / Intern": [
+      {icon:"✅", label:"Tasks Assigned Today", val:"--", color:"#fff"},
+      {icon:"📅", label:"Check-ins This Week", val:"--", color:"#5dade2"},
+      {icon:"📬", label:"Messages Unread", val:"--", color:"#f39c12"},
+      {icon:"🎓", label:"SOPs to Review", val:"--", color:"#2ecc71"}
+    ]
+  };
+  const stats = widgets[role] || widgets["Assistant / Intern"];
+  return `
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px">
+      ${stats.map(s=>`
+        <div style="background:#111;border:1px solid #2a2a2a;border-radius:8px;padding:10px 12px;text-align:center">
+          <div style="font-size:18px;margin-bottom:4px">${s.icon}</div>
+          <div style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:3px;line-height:1.3">${s.label}</div>
+          <div style="font-size:20px;font-weight:500;color:${s.color}">${s.val}</div>
+        </div>`).join("")}
+    </div>`;
+}
+
+// Welcome header used by all
+function welcomeHeader(user) {
+  return `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div>
+        <div style="font-size:16px;font-weight:500;color:#fff">Welcome back, ${user.firstName} ${user.lastName} 👋</div>
+        <div style="font-size:11px;color:#555;margin-top:3px">${user.role} &nbsp;·&nbsp; ${new Date().toLocaleDateString("en-US",{weekday:"long",year:"numeric",month:"long",day:"numeric"})}</div>
+      </div>
+      <div style="font-size:10px;color:#444;background:#111;border:1px solid #2a2a2a;border-radius:6px;padding:5px 10px">🔴 Live data connects as you build</div>
+    </div>`;
+}
+
+function renderBruceHome() {
+  const user = currentUser();
+  return `<div style="padding:20px 24px;max-width:100%">
+    ${welcomeHeader(user)}
+    ${sharedWidgets()}
+    ${finTable(true)}
+  </div>`;
+}
+
+function renderSeniorVAHome(user) {
+  return `<div style="padding:20px 24px;max-width:100%">
+    ${welcomeHeader(user)}
+    ${sharedWidgets()}
+    ${finTable(false)}
+  </div>`;
+}
+
+function renderGenericHome(user) {
+  if (isBruce(user)) return renderBruceHome();
+  if (user.role === "Senior Virtual Administrative Assistant") return renderSeniorVAHome(user);
+  // Project Managers get a personalized home showing their tasks + board summary
+  if (user.role === "Project Manager") return renderPMHome(user);
+  return `<div style="padding:20px 24px;max-width:100%">
+    ${welcomeHeader(user)}
+    ${sharedWidgets()}
+    ${roleWidget(user.role)}
+  </div>`;
+}
+
+function renderPMHome(user) {
+  // Match to a PM key by email
+  const pmKey = Object.keys(PM_DATA).find(k => PM_DATA[k].email === user.email) || null;
+  const pmName = pmKey || user.firstName;
+
+  const today = new Date(); today.setHours(0,0,0,0);
+  const cutoff14 = new Date(today); cutoff14.setDate(today.getDate()+14);
+  function within14(ds) { if(!ds) return false; const d=new Date(ds);d.setHours(0,0,0,0);return d>=today&&d<=cutoff14; }
+  function isOver(ds) { if(!ds) return false; const d=new Date(ds);d.setHours(0,0,0,0);return d<today; }
+
+  const myProps = propCards.filter(c => c.pm === pmName);
+  let allTasks = [];
+  let upcoming14Count = 0;
+  myProps.forEach(card => {
+    (card.subPhases||[]).forEach(sp => {
+      if(sp.due) { allTasks.push({addr:card.addr,task:sp.name,due:sp.due,overdue:isOver(sp.due)}); if(within14(sp.due)) upcoming14Count++; }
+    });
+    if(card.end) { allTasks.push({addr:card.addr,task:'Completion',due:card.end,overdue:isOver(card.end)}); if(within14(card.end)) upcoming14Count++; }
+  });
+  allTasks.sort((a,b)=>new Date(a.due)-new Date(b.due));
+  const top10 = allTasks.slice(0,10);
+
+  const taskRows = top10.length === 0
+    ? `<div style="text-align:center;color:#555;font-size:12px;padding:16px 0">No upcoming tasks — will connect to task manager</div>`
+    : top10.map(t=>`
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:0.5px solid #1e1e1e">
+        <div><div style="font-size:12px;color:#fff;font-weight:500">${t.task}</div><div style="font-size:11px;color:#666">${t.addr}</div></div>
+        <div style="font-size:11px;font-weight:600;color:${t.overdue?'#e74c3c':'#E24B4A'};text-align:right">${t.overdue?'⚠ Overdue':'Due'}<br><span style="font-weight:400;color:#555">${t.due}</span></div>
+      </div>`).join('');
+
+  return `<div style="padding:20px 24px;max-width:100%">
+    ${welcomeHeader(user)}
+    <div style="background:#111;border:1px solid #2a2a2a;border-radius:10px;overflow:hidden;margin-bottom:14px">
+      <div style="padding:10px 16px;border-bottom:1px solid #2a2a2a;display:flex;align-items:center;justify-content:space-between">
+        <div style="font-size:12px;font-weight:500;color:#fff">📋 Upcoming Due Tasks</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:10px;background:#1a2744;color:#5dade2;padding:2px 8px;border-radius:99px">${upcoming14Count} due in 14 days</span>
+          <span style="font-size:10px;color:#444;background:#1a1a1a;padding:2px 7px;border-radius:4px">Task portal + Project Dashboard · Top 10</span>
+        </div>
+      </div>
+      <div style="padding:8px 16px">${taskRows}</div>
+    </div>
+    ${sharedWidgets()}
+  </div>`;
+}
+
+
+function openPMAssistantDashboard() {
+  document.querySelectorAll(".dd").forEach(x=>x.classList.remove("open"));
+  document.querySelectorAll(".ni.has-dd").forEach(x=>x.classList.remove("on"));
+  document.getElementById("dash-body").innerHTML = `<div class="empty-state"><div class="icon">🗂</div><p style="color:#888;font-size:15px;font-weight:500">PM Assistant Dashboard</p><p style="color:#555;font-size:13px;margin-top:6px">Being built out. Check back soon.</p></div>`;
+}
+function openAdminDashboard() {
+  document.querySelectorAll(".dd").forEach(x=>x.classList.remove("open"));
+  document.querySelectorAll(".ni.has-dd").forEach(x=>x.classList.remove("on"));
+  document.getElementById("dash-body").innerHTML = `<div class="empty-state"><div class="icon">🏛</div><p style="color:#888;font-size:15px;font-weight:500">Admin Dashboard</p><p style="color:#555;font-size:13px;margin-top:6px">Being built out. Check back soon.</p></div>`;
+}
+function openSeniorVADashboard() {
+  document.querySelectorAll(".dd").forEach(x=>x.classList.remove("open"));
+  document.querySelectorAll(".ni.has-dd").forEach(x=>x.classList.remove("on"));
+  document.getElementById("dash-body").innerHTML = `<div class="empty-state"><div class="icon">💼</div><p style="color:#888;font-size:15px;font-weight:500">Senior VA Dashboard</p><p style="color:#555;font-size:13px;margin-top:6px">Being built out. Check back soon.</p></div>`;
+}
+function openVAAdminDashboard() {
+  document.querySelectorAll(".dd").forEach(x=>x.classList.remove("open"));
+  document.querySelectorAll(".ni.has-dd").forEach(x=>x.classList.remove("on"));
+  document.getElementById("dash-body").innerHTML = `<div class="empty-state"><div class="icon">🖥</div><p style="color:#888;font-size:15px;font-weight:500">VA Admin Dashboard</p><p style="color:#555;font-size:13px;margin-top:6px">Being built out. Check back soon.</p></div>`;
+}
+function openArchitectDashboard() {
+  document.querySelectorAll(".dd").forEach(x=>x.classList.remove("open"));
+  document.querySelectorAll(".ni.has-dd").forEach(x=>x.classList.remove("on"));
+  document.getElementById("dash-body").innerHTML = `<div class="empty-state"><div class="icon">📐</div><p style="color:#888;font-size:15px;font-weight:500">Architect Dashboard</p><p style="color:#555;font-size:13px;margin-top:6px">Being built out. Check back soon.</p></div>`;
+}
+
+function openTVDashboard() {
+  document.querySelectorAll(".dd").forEach(x => x.classList.remove("open"));
+  document.querySelectorAll(".ni.has-dd").forEach(x => x.classList.remove("on"));
+  document.getElementById("dash-body").innerHTML = `
+    <div class="empty-state">
+      <div class="icon">📺</div>
+      <p style="color:#888;font-size:15px;font-weight:500">TV Dashboard</p>
+      <p style="color:#555;font-size:13px;margin-top:6px">This dashboard is being built out. Check back soon.</p>
+    </div>
+  `;
+}
+
+// ===================== HOME BUTTON =====================
+function goHome() {
+  const u = currentUser();
+  if (!u) return;
+  document.getElementById("dash-body").innerHTML = renderGenericHome(u);
+  document.querySelectorAll(".dd").forEach(x => x.classList.remove("open"));
+  document.querySelectorAll(".ni.has-dd").forEach(x => x.classList.remove("on"));
+}
+
+// ===================== SITE SEARCH =====================
+const SEARCH_INDEX = [
+  // Nav sections
+  { title: "Project Director Dashboard",       desc: "Executive overview, team overview, performance reports, escalations", action: () => document.getElementById("pd-t").click() },
+  { title: "Project Manager Dashboard",        desc: "Active projects, schedule, crew assignment, inspections, change orders", action: () => document.getElementById("pm-t").click() },
+  { title: "Assistant Manager Dashboard",      desc: "Task queue, materials & orders, vendor tracking, time sheets", action: () => document.getElementById("am-t").click() },
+  { title: "Administrative Manager Dashboard", desc: "Contracts, billing, HR, system settings, permissions", action: () => document.getElementById("adm-t").click() },
+  { title: "Project Dashboard",                desc: "Main project dashboard for all roles", action: () => openProjectDashboard() },
+  { title: "Data Dashboard",                   desc: "PT Overhead, Project Team Spent, PM team overview", action: () => document.getElementById("data-t").click() },
+  { title: "PT Overhead & Expenses",           desc: "Bruce-only financial overhead and expense data", action: () => openDataSection("overhead") },
+  { title: "Project Team Spent",               desc: "Team spending data — Bruce and Senior VA access", action: () => openDataSection("teamspent") },
+  { title: "PM Team Overview",                 desc: "Bruce, Andrew, Isaiah — performance metrics side by side", action: () => openPMDashboard() },
+  { title: "VA Assistants Dashboard",           desc: "VA Assistants — Project Dashboard", action: () => document.getElementById("va-t").click() },
+  { title: "Architect Dashboard",               desc: "Architect — Project Dashboard and Design Dashboard", action: () => document.getElementById("arch-t").click() },
+  { title: "Design Dashboard",                  desc: "Design dashboard for all roles except VA Assistants", action: () => openDesignDashboard() },
+  { title: "Monthly Reports",                  desc: "Fill out and store monthly business overview reports by year and month", action: () => openMonthlyReports() },
+  { title: "Yearly Reports",                   desc: "View yearly reporting dashboard", action: () => document.getElementById("rep-t").click() },
+  { title: "Biweekly Reports",                 desc: "View biweekly reporting dashboard", action: () => document.getElementById("rep-t").click() },
+  { title: "End of Project Reports",           desc: "View end-of-project reporting dashboard", action: () => document.getElementById("rep-t").click() },
+  { title: "SOPs",                             desc: "All standard operating procedures — job roles and systems", action: () => document.getElementById("sop-t").click() },
+  { title: "Tools",                            desc: "External tool links including Eagleview", action: () => document.getElementById("tools-t").click() },
+  { title: "Eagleview",                        desc: "Open Eagleview in a new tab", action: () => window.open("https://signin.eagleview.com/","_blank") },
+  // SOPs
+  ...["Project Director","Project Manager","Administrative Assistant","Senior Administrative Assistant","Virtual Administrative Assistant","Senior Virtual Administrative Assistant","Start of Project Assistant","End of Project Assistant","Assistant / Intern"].map(r => ({
+    title: r + " SOP",
+    desc: "Standard operating procedure for " + r,
+    action: () => { closeModal("search-modal"); openSOP("role", r); }
+  })),
+  { title: "Systems & Processes SOPs",         desc: "All systems and processes standard operating procedures", action: () => { closeModal("search-modal"); openSOP("systems",""); }},
+  // Account
+  { title: "My Account",                       desc: "Edit your name, phone number, and password", action: () => { closeModal("search-modal"); openAccount(); }},
+  { title: "Change Password",                  desc: "Update your account password", action: () => { closeModal("search-modal"); openAccount(); }},
+  { title: "Admin Panel",                      desc: "Approve users, manage access levels and permissions", action: () => { closeModal("search-modal"); openAdmin(); }},
+  { title: "Sign Out",                         desc: "Sign out of your account", action: () => { closeModal("search-modal"); doSignOut(); }},
+  { title: "Home",                             desc: "Go back to your home dashboard", action: () => { closeModal("search-modal"); goHome(); }},
+];
+
+function doSearch() {
+  const q = document.getElementById("site-search").value.trim();
+  document.getElementById("search-modal-input").value = q;
+  liveSearch(q);
+  openModal("search-modal");
+  setTimeout(() => document.getElementById("search-modal-input").focus(), 50);
+}
+
+function liveSearch(q) {
+  const el = document.getElementById("search-results");
+  const term = q.trim().toLowerCase();
+  if (!term) {
+    el.innerHTML = `<div style="padding:24px;text-align:center;color:#555;font-size:13px">Start typing to search the dashboard...</div>`;
+    return;
+  }
+  const results = SEARCH_INDEX.filter(item =>
+    item.title.toLowerCase().includes(term) || item.desc.toLowerCase().includes(term)
+  );
+  if (results.length === 0) {
+    el.innerHTML = `<div style="padding:24px;text-align:center;color:#555;font-size:13px">No results found for "<span style="color:#888">${q}</span>"</div>`;
+    return;
+  }
+  el.innerHTML = results.map((r,i) => `
+    <div onclick="searchGo(${i})" style="padding:11px 20px;border-bottom:1px solid #1e1e1e;cursor:pointer;display:flex;align-items:center;gap:12px" onmouseover="this.style.background='#1a1a1a'" onmouseout="this.style.background='transparent'">
+      <div style="flex:1">
+        <div style="font-size:13px;color:#fff;margin-bottom:2px">${r.title}</div>
+        <div style="font-size:11px;color:#555">${r.desc}</div>
+      </div>
+      <div style="font-size:11px;color:#333">↗</div>
+    </div>`).join("");
+  // store filtered results for click access
+  window._searchResults = results;
+}
+
+function searchGo(i) {
+  const results = window._searchResults || [];
+  if (results[i]) {
+    closeModal("search-modal");
+    document.getElementById("site-search").value = "";
+    results[i].action();
+  }
+}
+
+// ===================== MONTHLY REPORTS =====================
+const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+function getMRData() {
+  try { return JSON.parse(localStorage.getItem("lh_monthly_reports") || "{}"); } catch(e) { return {}; }
+}
+function saveMRData(d) { localStorage.setItem("lh_monthly_reports", JSON.stringify(d)); }
+function mrKey(year, month) { return String(year) + "_" + String(month); }
+
+function openMonthlyReports() {
+  document.querySelectorAll(".dd").forEach(x => x.classList.remove("open"));
+  document.querySelectorAll(".ni.has-dd").forEach(x => x.classList.remove("on"));
+  renderMRSidebar();
+  const now = new Date();
+  showMRForm(now.getFullYear(), now.getMonth());
+  openModal("monthly-modal");
+}
+
+function renderMRSidebar() {
+  const data = getMRData();
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const years = new Set(Object.keys(data).map(k => k.split("_")[0]));
+  years.add(String(currentYear));
+  const sortedYears = Array.from(years).sort((a,b) => b - a);
+  let html = `<div style="padding:0 0 8px 0">
+    <div style="font-size:10px;color:#444;text-transform:uppercase;letter-spacing:0.06em;padding:8px 14px 6px">Years</div>`;
+  sortedYears.forEach(yr => {
+    html += `<div class="mr-year-block" id="mryr-${yr}">
+      <div onclick="toggleMRYear('${yr}')" style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;cursor:pointer;color:#aaa;font-size:12px;font-weight:500;border-bottom:1px solid #1a1a1a" onmouseover="this.style.background='#1a1a1a'" onmouseout="this.style.background='transparent'">
+        <span>${yr}</span><span id="mryr-chev-${yr}" style="font-size:10px;opacity:0.5">▾</span>
+      </div>
+      <div id="mryr-months-${yr}" style="display:block">`;
+    MONTHS.forEach((m, mi) => {
+      const key = mrKey(yr, mi);
+      const saved = !!data[key];
+      const isCurrent = parseInt(yr) === currentYear && mi === now.getMonth();
+      html += `<div onclick="showMRForm('${yr}', ${mi})" id="mr-month-${yr}-${mi}"
+        style="padding:7px 14px 7px 22px;font-size:12px;cursor:pointer;color:${saved ? '#2ecc71' : isCurrent ? '#5dade2' : '#555'};border-bottom:1px solid #141414;display:flex;align-items:center;gap:6px"
+        onmouseover="this.style.background='#1a1a1a';this.style.color='#fff'" onmouseout="resetMRMonth('${yr}',${mi})">
+        <span style="font-size:10px">${saved ? '●' : isCurrent ? '◉' : '○'}</span>${m}
+      </div>`;
+    });
+    html += `</div></div>`;
+  });
+  html += `</div>
+  <div style="padding:8px 14px;border-top:1px solid #1a1a1a;margin-top:4px">
+    <button onclick="showNewYearPrompt()" style="width:100%;background:transparent;border:1px dashed #2a2a2a;border-radius:6px;padding:6px;font-size:11px;color:#444;cursor:pointer" onmouseover="this.style.borderColor='#555';this.style.color='#888'" onmouseout="this.style.borderColor='#2a2a2a';this.style.color='#444'">+ Add Year</button>
+  </div>`;
+  document.getElementById("mr-sidebar").innerHTML = html;
+}
+
+function resetMRMonth(yr, mi) {
+  const data = getMRData();
+  const now = new Date();
+  const saved = !!data[mrKey(yr, mi)];
+  const isCurrent = parseInt(yr) === now.getFullYear() && mi === now.getMonth();
+  const el = document.getElementById(`mr-month-${yr}-${mi}`);
+  if (el) { el.style.background = "transparent"; el.style.color = saved ? "#2ecc71" : isCurrent ? "#5dade2" : "#555"; }
+}
+
+function toggleMRYear(yr) {
+  const el = document.getElementById(`mryr-months-${yr}`);
+  const chev = document.getElementById(`mryr-chev-${yr}`);
+  if (el) { const hidden = el.style.display === "none"; el.style.display = hidden ? "block" : "none"; if (chev) chev.textContent = hidden ? "▾" : "▸"; }
+}
+
+function showNewYearPrompt() {
+  const yr = prompt("Enter a year to add (e.g. 2025):");
+  if (yr && /^\d{4}$/.test(yr.trim())) { renderMRSidebar(); showMRForm(yr.trim(), 0); }
+}
+
+function showMRForm(year, monthIdx) {
+  // Highlight active month
+  document.querySelectorAll("[id^='mr-month-']").forEach(el => el.style.fontWeight = "400");
+  const activeEl = document.getElementById(`mr-month-${year}-${monthIdx}`);
+  if (activeEl) activeEl.style.fontWeight = "600";
+
+  const data = getMRData();
+  const key = mrKey(year, monthIdx);
+  const saved = data[key] || null;
+  const monthLabel = MONTHS[monthIdx] + " " + year;
+  const isSubmitted = saved && saved.submitted;
+
+  document.getElementById("mr-content").innerHTML = `
+    <div style="background:#01010b;padding:24px 28px 18px;border-bottom:1px solid #2a2a2a">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:26px;color:#fff;letter-spacing:-0.3px">Monthly Business Overview</div>
+          <div style="font-size:11px;color:#666;margin-top:3px;text-transform:uppercase;letter-spacing:0.5px">Track · Reflect · Plan Forward</div>
+        </div>
+        ${isSubmitted ? `<span style="background:#0f2d1a;border:1px solid #27ae60;color:#2ecc71;font-size:11px;padding:4px 12px;border-radius:99px">✓ Submitted</span>` : `<span style="background:#2d2200;border:1px solid #f39c12;color:#f39c12;font-size:11px;padding:4px 12px;border-radius:99px">Draft</span>`}
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px">
+        ${mrMetaField("Month / Year", "mr-month-year", monthLabel, true)}
+        ${mrMetaField("Department / Team", "mr-dept", saved?.dept || "", false, "Team name")}
+        ${mrMetaField("Prepared By", "mr-preparedby", saved?.preparedBy || "", false, "Your name")}
+        ${mrMetaField("Date Prepared", "mr-dateprep", saved?.datePrepared || "", false, "", "date")}
+      </div>
+    </div>
+    <div style="padding:20px 28px;display:flex;flex-direction:column;gap:20px">
+
+      ${mrSection(1, "Project Metrics", `
+        <table style="width:100%;border-collapse:collapse">
+          <thead><tr>
+            <th style="background:#fdf0f0;padding:9px 12px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:#01010b;border:1px solid #E2E8F0;text-align:left;width:55%">Metric</th>
+            <th style="background:#fdf0f0;padding:9px 12px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:#01010b;border:1px solid #E2E8F0;text-align:center;width:22%">Value</th>
+            <th style="background:#fdf0f0;padding:9px 12px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:#01010b;border:1px solid #E2E8F0;text-align:center;width:23%">Goal</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td style="padding:11px 12px;border:1px solid #E2E8F0;background:#fff;color:#1A202C">
+                <span style="font-size:13px;font-weight:600;display:block">% of Closed Projects to Finish Top Tier</span>
+                <span style="font-size:11px;color:#A0AEC0;display:block;margin-top:2px;font-style:italic">Enter finished top tier &amp; total closed — % auto-calculates</span>
+                <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
+                  <div style="flex:1"><label style="font-size:10px;color:#A0AEC0;display:block;margin-bottom:2px">Finished Top Tier</label>
+                    <input id="mr-tt-top" type="number" min="0" placeholder="0" value="${saved?.ttTop||''}" oninput="mrCalcTopTier()" style="${mrInputStyle('center')}"></div>
+                  <div style="font-size:18px;color:#CBD5E0;padding-top:16px">/</div>
+                  <div style="flex:1"><label style="font-size:10px;color:#A0AEC0;display:block;margin-bottom:2px">Total Closed</label>
+                    <input id="mr-tt-total" type="number" min="0" placeholder="0" value="${saved?.ttTotal||''}" oninput="mrCalcTopTier()" style="${mrInputStyle('center')}"></div>
+                </div>
+              </td>
+              <td style="padding:11px 12px;border:1px solid #E2E8F0;background:#fff;text-align:center"><div id="mr-tt-result" style="background:#F7FAFC;border:1px solid #E2E8F0;border-radius:6px;padding:6px 10px;font-size:15px;font-weight:700;text-align:center">${saved?.ttResult||'—'}</div></td>
+              <td style="padding:11px 12px;border:1px solid #E2E8F0;background:#fff;text-align:center"><span style="background:#f9e6e8;color:#9B2335;font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px">80%</span></td>
+            </tr>
+            ${mrMetricRow("Total Projects Listed on Market", "mr-m-listed", saved?.mListed||'', "All projects actively listed/marketed this month", 10, "≥ 10")}
+            ${mrMetricRow("Total Projects Signed Off to B&M", "mr-m-bm", saved?.mBM||'', "Projects signed off to Brokerage &amp; Management", null, "—")}
+            ${mrMetricRow("Total New Projects Started", "mr-m-new", saved?.mNew||'', "New projects that kicked off this month", 10, "≥ 10")}
+            ${mrMetricRow("Projects Currently in Construction Phase", "mr-m-const", saved?.mConst||'', "Active projects under construction as of month-end", 20, "≥ 20 min")}
+          </tbody>
+        </table>
+        <div style="margin-top:12px">
+          <label style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#4A5568;display:block;margin-bottom:6px">Notes on Project Metrics</label>
+          <textarea id="mr-metrics-notes" style="width:100%;border:1px solid #E2E8F0;border-radius:6px;padding:10px 12px;font-size:13px;resize:vertical;min-height:56px;outline:none;background:#F7FAFC;color:#1A202C" placeholder="Any additional context...">${saved?.metricsNotes||''}</textarea>
+        </div>
+      `)}
+
+      ${mrSection(2, "Wins &amp; Achievements", `
+        <label style="font-size:12px;font-weight:600;color:#4A5568;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:4px">Key Wins This Month</label>
+        <div style="font-size:11px;color:#A0AEC0;font-style:italic;margin-bottom:10px">Highlight successes, milestones reached, or positive outcomes</div>
+        ${[1,2,3].map(n=>`<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <div style="width:24px;height:24px;background:#f9e6e8;color:#9B2335;border-radius:50%;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${n}</div>
+          <input type="text" id="mr-win-${n}" value="${saved?.[`win${n}`]||''}" placeholder="Win #${n}" style="${mrInputStyle()}">
+        </div>`).join("")}
+      `)}
+
+      ${mrSection(3, "Challenges &amp; Blockers", `
+        <table style="width:100%;border-collapse:collapse">
+          <thead><tr>
+            <th style="${mrThStyle('44%')}">Challenge / Blocker</th>
+            <th style="${mrThStyle('16%')}">Impact (H/M/L)</th>
+            <th style="${mrThStyle('40%')}">Action Taken / Needed</th>
+          </tr></thead>
+          <tbody>
+            ${[1,2,3].map(n=>`<tr style="background:${n%2===0?'#F7FAFC':'#fff'}">
+              <td style="border:1px solid #E2E8F0;padding:6px 8px"><input type="text" id="mr-ch${n}-desc" value="${saved?.[`ch${n}desc`]||''}" placeholder="Describe challenge..." style="${mrTdInputStyle()}"></td>
+              <td style="border:1px solid #E2E8F0;padding:6px 8px"><input type="text" id="mr-ch${n}-impact" value="${saved?.[`ch${n}impact`]||''}" placeholder="H/M/L" style="${mrTdInputStyle('center')}"></td>
+              <td style="border:1px solid #E2E8F0;padding:6px 8px"><input type="text" id="mr-ch${n}-action" value="${saved?.[`ch${n}action`]||''}" placeholder="Action..." style="${mrTdInputStyle()}"></td>
+            </tr>`).join("")}
+          </tbody>
+        </table>
+      `)}
+
+      ${mrSection(4, "Team &amp; People Updates", `
+        <label style="font-size:12px;font-weight:600;color:#4A5568;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:4px">Notable Team Updates</label>
+        <div style="font-size:11px;color:#A0AEC0;font-style:italic;margin-bottom:10px">New hires, departures, promotions, recognition, training</div>
+        ${[1,2,3].map(n=>`<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <div style="width:24px;height:24px;background:#f9e6e8;color:#9B2335;border-radius:50%;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${n}</div>
+          <input type="text" id="mr-team-${n}" value="${saved?.[`team${n}`]||''}" placeholder="Update #${n}" style="${mrInputStyle()}">
+        </div>`).join("")}
+      `)}
+
+      ${mrSection(5, "Budget &amp; Financials", `
+        <div style="background:#9B2335;color:#fff;font-size:15px;padding:10px 16px;border-radius:6px 6px 0 0;font-family:'DM Serif Display',Georgia,serif">Project Team Overhead &amp; Expenses</div>
+        <table style="width:100%;border-collapse:collapse">
+          <thead><tr>
+            <th style="${mrThStyle('40%')}">Line Item</th>
+            <th style="${mrThStyle('60%')}">Amount ($)</th>
+          </tr></thead>
+          <tbody>
+            <tr style="background:#fff"><td style="padding:8px 14px;border:1px solid #E2E8F0;font-size:13px;font-weight:600;color:#1A202C">Budgeted</td>
+              <td style="border:1px solid #E2E8F0;padding:6px 10px"><input id="mr-f-budgeted" type="number" placeholder="0.00" value="${saved?.fBudgeted||''}" oninput="mrCalcFinance()" style="${mrInputStyle('right')}"></td></tr>
+            <tr style="background:#F7FAFC"><td style="padding:8px 14px;border:1px solid #E2E8F0;font-size:13px;font-weight:600;color:#1A202C">Actual</td>
+              <td style="border:1px solid #E2E8F0;padding:6px 10px"><input id="mr-f-actual" type="number" placeholder="0.00" value="${saved?.fActual||''}" oninput="mrCalcFinance()" style="${mrInputStyle('right')}"></td></tr>
+            <tr style="background:#fff"><td style="padding:8px 14px;border:1px solid #E2E8F0;font-size:13px;font-weight:600;color:#1A202C">Difference <span style="font-size:11px;color:#A0AEC0;font-weight:400">(Budgeted − Actual)</span></td>
+              <td style="border:1px solid #E2E8F0;padding:6px 10px"><div id="mr-f-diff" style="background:#F7FAFC;border:1px solid #E2E8F0;border-radius:6px;padding:6px 10px;font-size:13px;font-weight:600;text-align:right;color:#4A5568">${saved?.fDiff||'—'}</div></td></tr>
+            <tr style="background:#F7FAFC"><td style="padding:8px 14px;border:1px solid #E2E8F0;font-size:13px;font-weight:600;color:#1A202C">Gross Income</td>
+              <td style="border:1px solid #E2E8F0;padding:6px 10px"><input id="mr-f-gross" type="number" placeholder="0.00" value="${saved?.fGross||''}" oninput="mrCalcFinance()" style="${mrInputStyle('right')}"></td></tr>
+            <tr style="background:#fff"><td style="padding:8px 14px;border:1px solid #E2E8F0;font-size:13px;font-weight:600;color:#1A202C">Net Income After Actual Expenses <span style="font-size:11px;color:#A0AEC0;font-weight:400">(Gross − Actual)</span></td>
+              <td style="border:1px solid #E2E8F0;padding:6px 10px"><div id="mr-f-net" style="background:#F7FAFC;border:1px solid #E2E8F0;border-radius:6px;padding:6px 10px;font-size:13px;font-weight:600;text-align:right;color:#4A5568">${saved?.fNet||'—'}</div></td></tr>
+          </tbody>
+        </table>
+      `)}
+
+      ${mrSection(6, "Upcoming Priorities", `
+        <table style="width:100%;border-collapse:collapse">
+          <thead><tr>
+            <th style="${mrThStyle('28%')}">Priority / Initiative</th>
+            <th style="${mrThStyle('13%')}">Owner</th>
+            <th style="${mrThStyle('13%')}">Due Date</th>
+            <th style="${mrThStyle('11%')}">Impact</th>
+            <th style="${mrThStyle('35%')}">Action Taken / Needed</th>
+          </tr></thead>
+          <tbody>
+            ${[1,2,3,4].map(n=>`<tr style="background:${n%2===0?'#F7FAFC':'#fff'}">
+              <td style="border:1px solid #E2E8F0;padding:6px 8px"><input type="text" id="mr-up${n}-init" value="${saved?.[`up${n}init`]||''}" placeholder="Initiative..." style="${mrTdInputStyle()}"></td>
+              <td style="border:1px solid #E2E8F0;padding:6px 8px"><input type="text" id="mr-up${n}-owner" value="${saved?.[`up${n}owner`]||''}" placeholder="Name" style="${mrTdInputStyle()}"></td>
+              <td style="border:1px solid #E2E8F0;padding:6px 8px"><input type="date" id="mr-up${n}-due" value="${saved?.[`up${n}due`]||''}" style="${mrTdInputStyle()}"></td>
+              <td style="border:1px solid #E2E8F0;padding:6px 8px"><input type="text" id="mr-up${n}-impact" value="${saved?.[`up${n}impact`]||''}" placeholder="H/M/L" style="${mrTdInputStyle('center')}"></td>
+              <td style="border:1px solid #E2E8F0;padding:6px 8px"><input type="text" id="mr-up${n}-action" value="${saved?.[`up${n}action`]||''}" placeholder="Action..." style="${mrTdInputStyle()}"></td>
+            </tr>`).join("")}
+          </tbody>
+        </table>
+      `)}
+
+      <div style="display:flex;gap:10px;padding-bottom:24px;justify-content:flex-end">
+        ${isSubmitted ? `
+          <button onclick="clearMRSubmit('${year}',${monthIdx})" style="padding:10px 20px;background:transparent;border:1px solid #444;border-radius:6px;color:#888;font-size:13px;cursor:pointer">Edit / Reopen</button>
+          <button onclick="printMR()" style="padding:10px 20px;background:#9B2335;border:none;border-radius:6px;color:#fff;font-size:13px;font-weight:500;cursor:pointer">🖨 Print / Save PDF</button>
+        ` : `
+          <button onclick="saveMRDraft('${year}',${monthIdx},this)" style="padding:10px 20px;background:transparent;border:1px solid #444;border-radius:6px;color:#888;font-size:13px;cursor:pointer">💾 Save Draft</button>
+          <button onclick="submitMR('${year}',${monthIdx})" style="padding:10px 20px;background:#fff;border:none;border-radius:6px;color:#111;font-size:13px;font-weight:600;cursor:pointer">✅ Submit Report</button>
+        `}
+      </div>
+    </div>`;
+
+  // Recalculate computed fields if we have saved values
+  if (saved) { setTimeout(() => { mrCalcTopTier(); mrCalcFinance(); }, 50); }
+}
+
+// ── Helper renderers ──
+function mrMetaField(label, id, val, readonly, placeholder="", type="text") {
+  return `<div>
+    <label style="display:block;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:#A0AEC0;margin-bottom:4px">${label}</label>
+    <input id="${id}" type="${type}" value="${val}" placeholder="${placeholder}" ${readonly?"readonly":""} style="width:100%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:7px 10px;color:#fff;font-size:13px;outline:none;${readonly?'opacity:0.6;cursor:default;':''}">
+  </div>`;
+}
+function mrSection(num, title, body) {
+  return `<div style="background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.07)">
+    <div style="background:#01010b;padding:11px 18px;display:flex;align-items:center;gap:10px">
+      <div style="background:#9B2335;color:#fff;font-size:11px;font-weight:600;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">${num}</div>
+      <div style="font-family:'DM Serif Display',Georgia,serif;font-size:16px;color:#fff">${title}</div>
+    </div>
+    <div style="padding:18px">${body}</div>
+  </div>`;
+}
+function mrMetricRow(label, id, val, hint, goal, goalLabel) {
+  const goalBadge = goal ? `<span style="background:#f9e6e8;color:#9B2335;font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;white-space:nowrap">${goalLabel}</span>` : `<span style="color:#A0AEC0;text-align:center;font-size:13px">—</span>`;
+  return `<tr>
+    <td style="padding:11px 12px;border:1px solid #E2E8F0;background:#fff">
+      <span style="font-size:13px;font-weight:600;color:#1A202C;display:block">${label}</span>
+      <span style="font-size:11px;color:#A0AEC0;display:block;margin-top:2px;font-style:italic">${hint}</span>
+    </td>
+    <td style="padding:11px 12px;border:1px solid #E2E8F0;background:#fff;text-align:center">
+      <input id="${id}" type="number" min="0" placeholder="0" value="${val}" style="${mrInputStyle('center')}">
+    </td>
+    <td style="padding:11px 12px;border:1px solid #E2E8F0;background:#fff;text-align:center">${goalBadge}</td>
+  </tr>`;
+}
+function mrInputStyle(align="left") { return `width:100%;border:1px solid #CBD5E0;border-radius:6px;padding:6px 10px;font-size:13px;color:#1A202C;background:#fff;outline:none;text-align:${align}`; }
+function mrTdInputStyle(align="left") { return `width:100%;border:none;background:transparent;font-size:13px;color:#1A202C;outline:none;padding:4px;text-align:${align}`; }
+function mrThStyle(width) { return `background:#fdf0f0;padding:9px 12px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:#01010b;border:1px solid #E2E8F0;text-align:left;width:${width}`; }
+
+// ── Computed field calculators ──
+function mrCalcTopTier() {
+  const top = parseFloat(document.getElementById("mr-tt-top")?.value);
+  const total = parseFloat(document.getElementById("mr-tt-total")?.value);
+  const el = document.getElementById("mr-tt-result");
+  if (!el) return;
+  if (!isNaN(top) && !isNaN(total) && total > 0) {
+    const pct = (top/total*100).toFixed(1);
+    el.textContent = pct + "%";
+    el.style.background = pct >= 80 ? "#C6F6D5" : "#FED7D7";
+    el.style.color = pct >= 80 ? "#276749" : "#9B2C2C";
+    el.style.borderColor = pct >= 80 ? "#9AE6B4" : "#FEB2B2";
+  } else { el.textContent = "—"; el.style.background = "#F7FAFC"; el.style.color = "#4A5568"; el.style.borderColor = "#E2E8F0"; }
+}
+function mrCalcFinance() {
+  const b = parseFloat(document.getElementById("mr-f-budgeted")?.value);
+  const a = parseFloat(document.getElementById("mr-f-actual")?.value);
+  const g = parseFloat(document.getElementById("mr-f-gross")?.value);
+  const diffEl = document.getElementById("mr-f-diff");
+  const netEl = document.getElementById("mr-f-net");
+  function fmt(v) { return (v<0?"−":"") + "$" + Math.abs(v).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}); }
+  if (diffEl && !isNaN(b) && !isNaN(a)) {
+    const d = b-a; diffEl.textContent = fmt(d);
+    diffEl.style.background = d>=0?"#C6F6D5":"#FED7D7"; diffEl.style.color = d>=0?"#276749":"#9B2C2C"; diffEl.style.borderColor = d>=0?"#9AE6B4":"#FEB2B2";
+  }
+  if (netEl && !isNaN(g) && !isNaN(a)) {
+    const n = g-a; netEl.textContent = fmt(n);
+    netEl.style.background = n>=0?"#C6F6D5":"#FED7D7"; netEl.style.color = n>=0?"#276749":"#9B2C2C"; netEl.style.borderColor = n>=0?"#9AE6B4":"#FEB2B2";
+  }
+}
+
+// ── Collect form data ──
+function collectMRForm() {
+  const g = id => document.getElementById(id)?.value || "";
+  return {
+    dept: g("mr-dept"), preparedBy: g("mr-preparedby"), datePrepared: g("mr-dateprep"),
+    ttTop: g("mr-tt-top"), ttTotal: g("mr-tt-total"), ttResult: document.getElementById("mr-tt-result")?.textContent || "",
+    mListed: g("mr-m-listed"), mBM: g("mr-m-bm"), mNew: g("mr-m-new"), mConst: g("mr-m-const"),
+    metricsNotes: g("mr-metrics-notes"),
+    win1: g("mr-win-1"), win2: g("mr-win-2"), win3: g("mr-win-3"),
+    ch1desc: g("mr-ch1-desc"), ch1impact: g("mr-ch1-impact"), ch1action: g("mr-ch1-action"),
+    ch2desc: g("mr-ch2-desc"), ch2impact: g("mr-ch2-impact"), ch2action: g("mr-ch2-action"),
+    ch3desc: g("mr-ch3-desc"), ch3impact: g("mr-ch3-impact"), ch3action: g("mr-ch3-action"),
+    team1: g("mr-team-1"), team2: g("mr-team-2"), team3: g("mr-team-3"),
+    fBudgeted: g("mr-f-budgeted"), fActual: g("mr-f-actual"), fGross: g("mr-f-gross"),
+    fDiff: document.getElementById("mr-f-diff")?.textContent || "",
+    fNet: document.getElementById("mr-f-net")?.textContent || "",
+    up1init: g("mr-up1-init"), up1owner: g("mr-up1-owner"), up1due: g("mr-up1-due"), up1impact: g("mr-up1-impact"), up1action: g("mr-up1-action"),
+    up2init: g("mr-up2-init"), up2owner: g("mr-up2-owner"), up2due: g("mr-up2-due"), up2impact: g("mr-up2-impact"), up2action: g("mr-up2-action"),
+    up3init: g("mr-up3-init"), up3owner: g("mr-up3-owner"), up3due: g("mr-up3-due"), up3impact: g("mr-up3-impact"), up3action: g("mr-up3-action"),
+    up4init: g("mr-up4-init"), up4owner: g("mr-up4-owner"), up4due: g("mr-up4-due"), up4impact: g("mr-up4-impact"), up4action: g("mr-up4-action"),
+  };
+}
+
+function saveMRDraft(year, monthIdx, btnEl) {
+  const data = getMRData();
+  data[mrKey(year, monthIdx)] = { ...collectMRForm(), submitted: false };
+  saveMRData(data);
+  renderMRSidebar();
+  if (btnEl) {
+    btnEl.textContent = "✓ Draft Saved!"; btnEl.style.color = "#2ecc71"; btnEl.style.borderColor = "#27ae60";
+    setTimeout(() => { btnEl.textContent = "💾 Save Draft"; btnEl.style.color = "#888"; btnEl.style.borderColor = "#444"; }, 2000);
+  }
+}
+
+function submitMR(year, monthIdx) {
+  if (!confirm(`Submit the ${MONTHS[monthIdx]} ${year} report? You can reopen it to edit later.`)) return;
+  const data = getMRData();
+  data[mrKey(year, monthIdx)] = { ...collectMRForm(), submitted: true };
+  saveMRData(data);
+  renderMRSidebar();
+  showMRForm(year, monthIdx);
+}
+
+function clearMRSubmit(year, monthIdx) {
+  if (!confirm("Reopen this report for editing?")) return;
+  const data = getMRData();
+  if (data[mrKey(year, monthIdx)]) { data[mrKey(year, monthIdx)].submitted = false; saveMRData(data); }
+  renderMRSidebar();
+  showMRForm(year, monthIdx);
+}
+
+function printMR() { window.print(); }
+
+
+// ===================== PROPERTY DRAG AND DROP =====================
+let propDragId = null;
+
+function propDragStart(event, id) {
+  propDragId = id;
+  event.dataTransfer.effectAllowed = "move";
+  event.target.style.opacity = "0.5";
+  setTimeout(() => { if (event.target) event.target.style.opacity = "1"; }, 0);
+}
+
+function propDrop(event, targetPhase) {
+  event.preventDefault();
+  if (!propDragId) return;
+  const idx = propCards.findIndex(c => c.id === propDragId);
+  if (idx < 0) { propDragId = null; return; }
+
+  const oldPhase = propCards[idx].phase;
+  if (oldPhase === targetPhase) { propDragId = null; return; }
+
+  propCards[idx].phase = targetPhase;
+  propDragId = null;
+
+  // Re-render the board and refresh main dashboard if open
+  openProjectDashboard('trello');
+}
+
+// ===================== BOOT =====================
+init();
+</script>
+</body>
+</html>
